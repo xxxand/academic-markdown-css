@@ -1,0 +1,579 @@
+/* ==========================================================================
+   Academic Markdown stylesheet
+   A serif, book-like layout for A4 PDF output via md-to-pdf.
+   All text uses the Noto CJK Simplified Chinese families.
+
+   Colour palette: University of Cambridge brand colours
+   Source: https://www.cam.ac.uk/brand-resources/guidelines/colour
+   Slate 4 #232830 (text) · Slate 3 #546072 · Slate 2 #B5BDC8
+   Slate 1 #ECEEF1 (surfaces) · Cambridge Dark Blue #133844 (accent)
+   Dark Cherry #911449 · Dark Green #13553A · Dark Indigo #29347A
+   ========================================================================== */
+
+:root {
+  --ink: #232830;
+  --ink-soft: #546072;
+  --muted: #546072;
+  --accent: #133844;
+  --rule: #232830;
+  --rule-light: #b5bdc8;
+  --wash: #eceef1;
+  --code-bg: #eceef1;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 10.5pt;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background: #fff;
+  color: var(--ink);
+  font-family: "Noto Serif CJK SC", "Noto Sans CJK SC", serif;
+  font-size: 10.5pt;
+  line-height: 1.8;
+  text-align: justify;
+  text-justify: inter-ideograph;
+  font-kerning: normal;
+  font-variant-ligatures: common-ligatures;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* --------------------------------------------------------------------------
+   Title and headings
+   -------------------------------------------------------------------------- */
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: #232830;
+  break-after: avoid-page;
+  page-break-after: avoid;
+}
+
+h1 {
+  margin: 0 0 1.5em;
+  padding: 1.1em 0 1em;
+  border-top: 4pt double var(--rule);
+  border-bottom: 0.7pt solid var(--rule);
+  font-family: "Noto Serif CJK SC", serif;
+  font-size: 20.5pt;
+  font-weight: 700;
+  line-height: 1.4;
+  letter-spacing: 0.055em;
+  text-align: center;
+}
+
+/* The default md-to-pdf stylesheet removes the top padding of the first child. */
+body > h1:first-child {
+  margin-top: 0;
+  padding-top: 1.1em;
+}
+
+h2 {
+  margin: 1.7em 0 0.8em;
+  padding-bottom: 0.32em;
+  border-bottom: 0.75pt solid var(--rule-light);
+  font-family: "Noto Sans CJK SC", sans-serif;
+  font-size: 15pt;
+  font-weight: 700;
+  line-height: 1.5;
+  letter-spacing: 0.015em;
+}
+
+h3 {
+  margin: 1.55em 0 0.55em;
+  font-family: "Noto Sans CJK SC", sans-serif;
+  font-size: 12.3pt;
+  font-weight: 600;
+  line-height: 1.55;
+  color: #232830;
+}
+
+h4 {
+  margin: 1.3em 0 0.45em;
+  padding-left: 0.6em;
+  border-left: 2pt solid #b5bdc8;
+  font-family: "Noto Sans CJK SC", sans-serif;
+  font-size: 10.8pt;
+  font-weight: 600;
+  line-height: 1.55;
+  color: #232830;
+}
+
+h5 {
+  margin: 1.2em 0 0.35em;
+  padding: 0;
+  font-family: "Noto Sans CJK SC", sans-serif;
+  font-size: 10.5pt;
+  font-weight: 600;
+}
+
+h6 {
+  margin: 1em 0 0.3em;
+  padding: 0;
+  color: var(--muted);
+  font-family: "Noto Sans CJK SC", sans-serif;
+  font-size: 10pt;
+  font-weight: 600;
+}
+
+/* --------------------------------------------------------------------------
+   Body text
+   -------------------------------------------------------------------------- */
+
+p {
+  margin: 0.45em 0 0.65em;
+  text-indent: 2em;
+  orphans: 2;
+  widows: 2;
+}
+
+strong {
+  font-weight: 700;
+  color: #232830;
+}
+
+a {
+  color: var(--accent);
+  text-decoration: none;
+  border-bottom: 0.5pt solid rgba(19, 56, 68, 0.45);
+}
+
+mark {
+  padding: 0 0.12em;
+  background: #d1f9f1;
+  color: #232830;
+}
+
+kbd {
+  padding: 0.05em 0.3em;
+  background: #ffffff;
+  border: 0.5pt solid #b5bdc8;
+  border-bottom-width: 1.1pt;
+  border-radius: 2px;
+  color: #232830;
+  font-family: "Noto Sans Mono CJK SC", "Noto Sans CJK SC", monospace;
+  font-size: 0.82em;
+}
+
+abbr[title] {
+  text-decoration: underline dotted;
+}
+
+sub,
+sup {
+  font-size: 0.72em;
+  line-height: 0;
+}
+
+small {
+  color: var(--muted);
+  font-size: 0.86em;
+}
+
+/* --------------------------------------------------------------------------
+   Lists
+   -------------------------------------------------------------------------- */
+
+ul,
+ol {
+  margin: 0.35em 0 0.85em;
+  padding-left: 1.8em;
+}
+
+ul ul,
+ul ol,
+ol ul,
+ol ol {
+  margin: 0.2em 0 0.3em;
+}
+
+li {
+  margin: 0.18em 0;
+  padding-left: 0.12em;
+  orphans: 2;
+  widows: 2;
+}
+
+li > p {
+  margin: 0.2em 0;
+  text-indent: 0;
+}
+
+li::marker {
+  font-family: "Noto Sans CJK SC", sans-serif;
+  font-size: 0.9em;
+  color: var(--accent);
+}
+
+.task-list-item,
+li:has(> input[type="checkbox"]) {
+  list-style: none;
+}
+
+li:has(> input[type="checkbox"])::marker {
+  content: "";
+}
+
+.task-list-item input[type="checkbox"],
+li > input[type="checkbox"] {
+  width: 0.9em;
+  height: 0.9em;
+  margin: 0 0.45em 0 -1.35em;
+  vertical-align: -0.08em;
+  accent-color: var(--accent);
+}
+
+/* --------------------------------------------------------------------------
+   Block quotations: used here as restrained academic call-outs
+   -------------------------------------------------------------------------- */
+
+blockquote {
+  margin: 1.2em 0 1.4em;
+  padding: 0.9em 1.15em 0.85em 1.25em;
+  background: var(--wash);
+  border: 0.5pt solid #b5bdc8;
+  border-left: 3pt solid var(--accent);
+  color: #232830;
+  font-family: "Noto Serif CJK SC", serif;
+  font-size: 9.9pt;
+  font-style: normal;
+  line-height: 1.75;
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
+
+blockquote p {
+  margin: 0.3em 0;
+  text-indent: 0;
+}
+
+blockquote p:first-child {
+  margin-top: 0;
+}
+
+blockquote p:last-child {
+  margin-bottom: 0;
+}
+
+blockquote ul,
+blockquote ol {
+  margin: 0.25em 0 0.35em;
+  padding-left: 1.55em;
+}
+
+/* --------------------------------------------------------------------------
+   Code
+   -------------------------------------------------------------------------- */
+
+body code {
+  padding: 0.06em 0.28em;
+  background: var(--wash);
+  border: 0;
+  border-radius: 2px;
+  color: #232830;
+  font-family: "Noto Sans Mono CJK SC", "Noto Sans CJK SC", monospace;
+  font-size: 0.86em;
+}
+
+pre {
+  margin: 1em 0 1.2em;
+  padding: 0.85em 1em;
+  background: var(--code-bg);
+  border: 0.5pt solid #b5bdc8;
+  border-left: 2.5pt solid #546072;
+  border-radius: 2px;
+  color: #232830;
+  font-family: "Noto Sans Mono CJK SC", "Noto Sans CJK SC", monospace;
+  font-size: 8.6pt;
+  line-height: 1.62;
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
+  word-break: normal;
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
+
+pre code {
+  display: block;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  color: inherit;
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+}
+
+/* Higher specificity than the highlight.js stylesheet loaded afterwards. */
+body pre code.hljs {
+  display: block;
+  overflow: visible;
+  padding: 0;
+  background: transparent;
+  color: inherit;
+}
+
+body pre .hljs-comment,
+body pre .hljs-quote {
+  color: #546072;
+  font-style: normal;
+}
+
+body pre .hljs-keyword,
+body pre .hljs-selector-tag,
+body pre .hljs-type,
+body pre .hljs-template-tag,
+body pre .hljs-template-variable {
+  color: #911449;
+  font-weight: 600;
+}
+
+body pre .hljs-string,
+body pre .hljs-regexp,
+body pre .hljs-attr {
+  color: #13553a;
+}
+
+body pre .hljs-number,
+body pre .hljs-literal,
+body pre .hljs-variable,
+body pre .hljs-operator {
+  color: #29347a;
+}
+
+body pre .hljs-title,
+body pre .hljs-title.function_,
+body pre .hljs-section {
+  color: #133844;
+  font-weight: 600;
+}
+
+body pre .hljs-built_in,
+body pre .hljs-symbol {
+  color: #911449;
+}
+
+body pre .hljs-meta {
+  color: #546072;
+}
+
+/* Inline code inside headings and tables is kept quiet. */
+h1 code,
+h2 code,
+h3 code,
+h4 code {
+  padding: 0;
+  background: transparent;
+  border: 0;
+  color: inherit;
+  font-size: 0.88em;
+}
+
+table code {
+  padding: 0;
+  background: transparent;
+  border: 0;
+  font-size: 0.9em;
+}
+
+/* --------------------------------------------------------------------------
+   Tables: three-line (booktabs) style
+   -------------------------------------------------------------------------- */
+
+table {
+  display: table;
+  width: 100%;
+  margin: 1em 0 1.35em;
+  border-collapse: collapse;
+  border-spacing: 0;
+  font-size: 9.3pt;
+  line-height: 1.55;
+  overflow: visible;
+  break-inside: auto;
+}
+
+/* Keep short tables on one page, together with their lead-in sentence. */
+p:has(+ table) {
+  break-after: avoid-page;
+  page-break-after: avoid;
+}
+
+table:not(:has(tbody tr:nth-child(9))) {
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
+
+thead {
+  display: table-header-group;
+  break-inside: avoid;
+}
+
+tfoot {
+  display: table-footer-group;
+}
+
+table th,
+table td {
+  padding: 0.42em 0.62em;
+  border: 0;
+  vertical-align: top;
+  text-align: left;
+}
+
+table thead th {
+  padding-top: 0.5em;
+  padding-bottom: 0.45em;
+  border-top: 1.4pt solid var(--rule);
+  border-bottom: 0.7pt solid var(--rule);
+  background: transparent;
+  color: #232830;
+  font-family: "Noto Sans CJK SC", sans-serif;
+  font-size: 9.2pt;
+  font-weight: 600;
+}
+
+table tbody td {
+  border: 0;
+}
+
+table tbody tr {
+  border: 0;
+}
+
+/* Neutralise the striped rows and borders in md-to-pdf's default stylesheet. */
+table tbody tr:nth-child(n) {
+  background: transparent;
+}
+
+table tbody tr:last-child td {
+  border-bottom: 1.4pt solid var(--rule);
+}
+
+table tr {
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
+
+table caption {
+  caption-side: top;
+  margin-bottom: 0.4em;
+  color: var(--muted);
+  font-family: "Noto Sans CJK SC", sans-serif;
+  font-size: 9pt;
+  text-align: left;
+}
+
+/* --------------------------------------------------------------------------
+   Rules, images, and collapsible Q&A blocks
+   -------------------------------------------------------------------------- */
+
+hr {
+  width: 32%;
+  margin: 2.1em auto 1.5em;
+  border: 0;
+  border-top: 0.75pt solid #b5bdc8;
+  break-after: avoid-page;
+  page-break-after: avoid;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin: 1.2em auto;
+}
+
+figure {
+  margin: 1.2em 0;
+  break-inside: avoid;
+}
+
+figure img {
+  margin: 0 auto;
+  border: 0.5pt solid var(--rule-light);
+}
+
+figcaption {
+  margin-top: 0.55em;
+  color: var(--muted);
+  font-family: "Noto Sans CJK SC", sans-serif;
+  font-size: 9pt;
+  text-align: center;
+}
+
+dl {
+  margin: 1em 0 1.2em;
+}
+
+dt {
+  color: #232830;
+  font-family: "Noto Sans CJK SC", sans-serif;
+  font-weight: 600;
+}
+
+dd {
+  margin: 0.15em 0 0.55em 2em;
+}
+
+details {
+  margin: 0.9em 0;
+  padding: 0.75em 1em 0.8em 1.1em;
+  background: #eceef1;
+  border: 0.5pt solid #b5bdc8;
+  border-left: 2.5pt solid var(--accent);
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
+
+summary {
+  color: #232830;
+  font-family: "Noto Sans CJK SC", sans-serif;
+  font-size: 9.9pt;
+  font-weight: 600;
+  line-height: 1.6;
+  list-style: none;
+  cursor: default;
+}
+
+summary::-webkit-details-marker {
+  display: none;
+}
+
+details[open] summary {
+  margin-bottom: 0.35em;
+}
+
+details p {
+  margin: 0.3em 0 0.15em;
+  font-size: 9.9pt;
+  text-indent: 0;
+}
+
+/* --------------------------------------------------------------------------
+   Print details
+   -------------------------------------------------------------------------- */
+
+.page-break {
+  break-after: page;
+  page-break-after: always;
+}
+
+::selection {
+  background: #d1f9f1;
+}
+
+@media print {
+  a {
+    color: inherit;
+  }
+}
