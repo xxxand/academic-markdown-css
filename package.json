@@ -3,6 +3,14 @@
   "version": "0.1.0",
   "private": true,
   "description": "Academic-style Markdown CSS for md-to-pdf, typeset with Noto CJK SC.",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/xxxand/academic-markdown-css.git"
+  },
+  "homepage": "https://github.com/xxxand/academic-markdown-css",
+  "bugs": {
+    "url": "https://github.com/xxxand/academic-markdown-css/issues"
+  },
   "scripts": {
     "render": "md-to-pdf --config-file md-to-pdf.config.js",
     "build": "md-to-pdf example.md --config-file md-to-pdf.config.js"
