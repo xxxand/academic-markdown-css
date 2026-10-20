@@ -65,31 +65,35 @@
 
 ## 4. 代码
 
-行内代码如 `np.linalg.solve(A, b)` 使用等宽字体和浅灰底。下面分别测试 Python、Bash、JSON 和纯文本代码块。
+行内代码如 `标准化(数值列表)` 使用等宽字体和浅灰底。下面分别测试 Python、Bash、JSON 和纯文本代码块。
 
 ```python
-def standardize(values):
-    mean = sum(values) / len(values)
-    variance = sum((x - mean) ** 2 for x in values) / len(values)
-    return [(x - mean) / variance ** 0.5 for x in values]
+def standardize(数值列表):
+    """按训练集统计量做标准化。"""
+    均值 = sum(数值列表) / len(数值列表)
+    方差 = sum((x - 均值) ** 2 for x in 数值列表) / len(数值列表)
+    return [(x - 均值) / 方差 ** 0.5 for x in 数值列表]
 ```
 
 ```bash
+# 安装依赖
 npm install
+
+# 渲染示例文档
 md-to-pdf example.md --config-file md-to-pdf.config.js
 ```
 
 ```json
 {
-  "title": "Academic Markdown",
-  "palette": "Cambridge Slate",
-  "fonts": ["Noto Serif CJK SC", "Noto Sans CJK SC"]
+  "标题": "学术 Markdown 示例",
+  "配色": "Cambridge Slate",
+  "字体": ["Noto Serif CJK SC", "Sarasa Mono SC"]
 }
 ```
 
 ```text
-Markdown → HTML → PDF
-       └─ academic-markdown.css
+Markdown（中文）→ HTML → PDF
+       └─ 学术排版样式
 ```
 
 ## 5. 图片与图注
