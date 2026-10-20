@@ -560,6 +560,163 @@ details p {
 }
 
 /* --------------------------------------------------------------------------
+   Alerts
+   -------------------------------------------------------------------------- */
+
+.alert {
+  margin: 1.1em 0 1.3em;
+  padding: 0.8em 1.05em 0.85em 1.15em;
+  background: var(--alert-bg);
+  border: 0.5pt solid var(--alert-border);
+  border-left: 3pt solid var(--alert-color);
+  color: #232830;
+  font-size: 9.9pt;
+  line-height: 1.72;
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
+
+.alert-note {
+  --alert-color: #133844;
+  --alert-bg: #edf2f4;
+  --alert-border: #b9c8ce;
+}
+
+.alert-tip {
+  --alert-color: #13553a;
+  --alert-bg: #edf4f0;
+  --alert-border: #b8cdc2;
+}
+
+.alert-important {
+  --alert-color: #29347a;
+  --alert-bg: #eef0f7;
+  --alert-border: #c2c7df;
+}
+
+.alert-warning {
+  --alert-color: #911449;
+  --alert-bg: #f8edf2;
+  --alert-border: #d9b7c5;
+}
+
+.alert-caution {
+  --alert-color: #5e1030;
+  --alert-bg: #f7ebf0;
+  --alert-border: #d4b0bf;
+}
+
+.alert-title {
+  margin: 0 0 0.35em;
+  color: var(--alert-color);
+  font-family: "Noto Sans CJK SC", sans-serif;
+  font-size: 9pt;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  line-height: 1.5;
+  text-indent: 0;
+}
+
+.alert p {
+  margin: 0.3em 0;
+  text-indent: 0;
+}
+
+.alert > :first-child {
+  margin-top: 0;
+}
+
+.alert > :last-child {
+  margin-bottom: 0;
+}
+
+.alert ul,
+.alert ol {
+  margin: 0.25em 0 0.35em;
+  padding-left: 1.55em;
+}
+
+/* --------------------------------------------------------------------------
+   LaTeX / KaTeX
+   -------------------------------------------------------------------------- */
+
+body .katex {
+  font-size: 1.02em;
+}
+
+body .katex-display {
+  margin: 1.15em 0 1.3em;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+/* --------------------------------------------------------------------------
+   Mermaid
+   -------------------------------------------------------------------------- */
+
+pre.mermaid {
+  margin: 1.2em auto 1.5em;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  font-family: "Noto Sans CJK SC", "Noto Serif CJK SC", sans-serif;
+  text-align: center;
+  white-space: normal;
+  overflow: visible;
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
+
+pre.mermaid svg {
+  display: block;
+  width: auto;
+  max-width: 100%;
+  height: auto;
+  max-height: 220mm;
+  margin: 0 auto;
+  overflow: visible;
+}
+
+pre.mermaid.mermaid-error {
+  padding: 0.85em 1em;
+  background: #f8edf2;
+  border: 0.5pt solid #d9b7c5;
+  border-left: 2.5pt solid #911449;
+  color: #911449;
+  font-family: "Noto Sans CJK SC", sans-serif;
+  font-size: 9pt;
+  line-height: 1.6;
+  text-align: left;
+  white-space: pre-wrap;
+}
+
+/* --------------------------------------------------------------------------
+   Diff
+   -------------------------------------------------------------------------- */
+
+body pre .hljs-addition,
+body pre .hljs-deletion {
+  display: inline-block;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+body pre .hljs-addition {
+  color: #13553a;
+  background: #dcefe3;
+}
+
+body pre .hljs-deletion {
+  color: #911449;
+  background: #f7dfe7;
+}
+
+body pre .hljs-meta {
+  color: #546072;
+}
+
+/* --------------------------------------------------------------------------
    Print details
    -------------------------------------------------------------------------- */
 

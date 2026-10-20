@@ -2,7 +2,7 @@
   "name": "academic-markdown-css",
   "version": "0.1.0",
   "private": true,
-  "description": "Academic-style Markdown CSS for md-to-pdf, typeset with Noto CJK SC and Sarasa Mono SC.",
+  "description": "Academic-style Markdown CSS for md-to-pdf, with Noto CJK SC, Sarasa Mono SC, Mermaid, KaTeX, alerts, and diff highlighting.",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/xxxand/academic-markdown-css.git"
@@ -22,13 +22,21 @@
     "pdf",
     "md-to-pdf",
     "noto-cjk",
+    "mermaid",
+    "katex",
+    "alerts",
+    "diff",
     "typesetting"
   ],
   "engines": {
     "node": ">=18"
   },
   "devDependencies": {
-    "md-to-pdf": "^5.2.5"
+    "katex": "^0.16.47",
+    "marked": "^4.3.0",
+    "marked-katex-extension": "^5.1.13",
+    "md-to-pdf": "^5.2.5",
+    "mermaid": "^11.17.2"
   },
   "license": "UNLICENSED"
 }

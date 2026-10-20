@@ -15,6 +15,10 @@
 - 页眉自动显示文档标题，页脚显示页码
 - 按标题自动生成 PDF 书签
 - 代码块、行内代码、引用块、图片图注
+- Diff 代码块：新增行与删除行分别着色
+- GitHub 风格 Alerts：`NOTE`、`TIP`、`IMPORTANT`、`WARNING`、`CAUTION`
+- KaTeX 行内与行间数学公式
+- Mermaid 流程图、时序图等，在 Chromium 内本地渲染
 - 任务列表、定义列表、`<details>` 折叠问答
 - 自动展开 `<details>`，便于打印
 - 通用配置：自动读取每个 Markdown 的第一个 `h1` 作为标题
@@ -26,6 +30,7 @@
 - Noto Serif CJK SC
 - Noto Sans CJK SC
 - Sarasa Mono SC（代码字体）
+- Mermaid、KaTeX 等 npm 依赖（`npm install` 会自动安装）
 
 Debian / Ubuntu 可安装 Noto 字体：
 
@@ -69,6 +74,67 @@ md-to-pdf your-file.md --config-file md-to-pdf.config.js
 ```
 
 如果文件不在项目目录内，需要额外指定 `--basedir`。
+
+## 扩展语法
+
+### Alerts 提示块
+
+支持 GitHub 风格的 `NOTE`、`TIP`、`IMPORTANT`、`WARNING`、`CAUTION` 五种提示块：
+
+```markdown
+> [!NOTE]
+> 这里是说明文字，可以包含 **粗体**、`行内代码` 和列表。
+>
+> - 第一项
+> - 第二项
+
+> [!WARNING]
+> 这里是警告文字。
+```
+
+### LaTeX 数学
+
+支持行内公式 `$...$` 和行间公式 `$$...$$`，由 KaTeX 渲染：
+
+```latex
+行内公式：$E = mc^2$。
+
+$$
+\operatorname{softmax}(z_i) =
+\frac{\exp(z_i)}{\sum_{j=1}^{n}\exp(z_j)}
+$$
+```
+
+这是 KaTeX 的常用数学语法子集，不是完整的 LaTeX 文档引擎；不包含宏包、章节和交叉引用等能力。
+
+### Diff 代码块
+
+用 `diff` 标记代码块，`+` 和 `-` 开头的行会自动着色：
+
+````markdown
+```diff
+- 旧实现：按列均值填充缺失值
++ 新实现：按训练集统计量标准化
++ 同时保留原始索引
+```
+````
+
+### Mermaid 图表
+
+用 `mermaid` 标记代码块：
+
+````markdown
+```mermaid
+flowchart LR
+    A[Markdown 源文件] --> B{包含 Mermaid?}
+    B -- 是 --> C[渲染为 SVG]
+    B -- 否 --> D[普通 HTML]
+    C --> E[生成 A4 PDF]
+    D --> E
+```
+````
+
+Mermaid 使用本地 npm 包，在 Chromium 内渲染，不请求 CDN。普通流程图、时序图等可以直接使用；过大的图建议拆分为多张，避免缩小后文字过小。
 
 ## 标题与页眉
 
@@ -119,11 +185,12 @@ frontmatter 中的 `document_title` 会覆盖自动提取的标题。
 │   ├── example-figure.svg    # 示例图片
 │   └── preview.png           # README 预览图
 ├── package.json
+├── package-lock.json
 └── README.md
 ```
 
 ## 说明
 
-- 当前不包含 Mermaid 或 LaTeX 的自动渲染；如需使用，建议在构建前把图或公式预渲染成 SVG。
+- Mermaid、KaTeX 和 Alerts 都在本地 Chromium 或 Node.js 中处理，不依赖 CDN；Mermaid 图会先渲染成 SVG 再写入 PDF。
 - 短表保持整表不拆页、长表允许跨页，依赖 Chromium 的 CSS 分页能力。
 - 示例文档仅用于展示样式，可直接替换为自己的 Markdown。
