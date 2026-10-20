@@ -2,9 +2,9 @@
 
 > 这是一份用于检查 `academic-markdown.css` 的样式测试文档。它覆盖标题层级、正文强调、列表、引用、表格、代码、图片、折叠问答和强制分页等常见 Markdown 元素。
 >
-> 文档使用 Noto Serif / Sans / Mono CJK SC，配色取自 University of Cambridge 官方色板。
+> 文档的正文和标题使用 Noto Serif / Sans CJK SC，代码使用 Sarasa Mono SC；配色取自 University of Cambridge 官方色板。
 
-**关键词**：Markdown · 学术排版 · md-to-pdf · Noto CJK
+**关键词**：Markdown · 学术排版 · md-to-pdf · Noto CJK · Sarasa Mono
 
 <small>文档版本：2026-10 · 仅用于样式展示</small>
 

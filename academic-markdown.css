@@ -1,7 +1,7 @@
 /* ==========================================================================
    Academic Markdown stylesheet
    A serif, book-like layout for A4 PDF output via md-to-pdf.
-   All text uses the Noto CJK Simplified Chinese families.
+   Body and headings use Noto CJK SC; code uses Sarasa Mono SC.
 
    Colour palette: University of Cambridge brand colours
    Source: https://www.cam.ac.uk/brand-resources/guidelines/colour
@@ -161,7 +161,7 @@ kbd {
   border-bottom-width: 1.1pt;
   border-radius: 2px;
   color: #232830;
-  font-family: "Noto Sans Mono CJK SC", "Noto Sans CJK SC", monospace;
+  font-family: "Sarasa Mono SC", "Noto Sans Mono CJK SC", monospace;
   font-size: 0.82em;
 }
 
@@ -281,7 +281,7 @@ body code {
   border: 0;
   border-radius: 2px;
   color: #232830;
-  font-family: "Noto Sans Mono CJK SC", "Noto Sans CJK SC", monospace;
+  font-family: "Sarasa Mono SC", "Noto Sans Mono CJK SC", monospace;
   font-size: 0.86em;
 }
 
@@ -293,7 +293,7 @@ pre {
   border-left: 2.5pt solid #546072;
   border-radius: 2px;
   color: #232830;
-  font-family: "Noto Sans Mono CJK SC", "Noto Sans CJK SC", monospace;
+  font-family: "Sarasa Mono SC", "Noto Sans Mono CJK SC", monospace;
   font-size: 8.6pt;
   line-height: 1.62;
   white-space: pre-wrap;

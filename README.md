@@ -2,7 +2,7 @@
 
 一套中文优先的学术风格 Markdown 样式，配合 [md-to-pdf](https://github.com/simonhaenisch/md-to-pdf) 生成 A4 PDF。
 
-正文、标题、代码分别使用 Noto Serif / Sans / Mono CJK SC；页面采用首行缩进、两端对齐、三线表、页眉页码和 PDF 书签。
+正文与标题使用 Noto Serif / Sans CJK SC，代码使用 Sarasa Mono SC；页面采用首行缩进、两端对齐、三线表、页眉页码和 PDF 书签。
 
 ![渲染预览](assets/preview.png)
 
@@ -25,18 +25,26 @@
 - Node.js >= 18
 - Noto Serif CJK SC
 - Noto Sans CJK SC
-- Noto Sans Mono CJK SC
+- Sarasa Mono SC（代码字体）
 
-Debian / Ubuntu 可安装：
+Debian / Ubuntu 可安装 Noto 字体：
 
 ```bash
 sudo apt install fonts-noto-cjk
 ```
 
-macOS 或其他系统请安装对应的 Noto CJK 字体。可以用下面的命令确认：
+Sarasa Mono SC 从 [Sarasa Gothic Releases](https://github.com/be5invis/Sarasa-Gothic/releases) 下载 TTF 版本，安装到系统字体目录后刷新字体缓存：
 
 ```bash
-fc-list :lang=zh | grep -i "Noto.*CJK"
+# 以实际下载路径为准
+sudo cp SarasaMonoSC-*.ttf /usr/local/share/fonts/
+sudo fc-cache -f
+```
+
+可以用下面的命令确认字体：
+
+```bash
+fc-list | grep -iE "Noto (Serif|Sans) CJK SC|Sarasa Mono SC"
 ```
 
 ## 快速开始
