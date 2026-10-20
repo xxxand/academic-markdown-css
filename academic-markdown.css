@@ -678,6 +678,14 @@ pre.mermaid svg {
   overflow: visible;
 }
 
+/* Mermaid uses HTML labels inside foreignObject; reset the article paragraph
+   indent so node and edge labels stay centered in their shapes. */
+pre.mermaid p {
+  margin: 0;
+  text-align: center;
+  text-indent: 0;
+}
+
 pre.mermaid.mermaid-error {
   padding: 0.85em 1em;
   background: #f8edf2;
