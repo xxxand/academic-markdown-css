@@ -3,6 +3,4 @@ node_modules/
 *.log
 *.pdf
 !example.pdf
-*:Zone.Identifier
-*.Zone.Identifier
 example.html
