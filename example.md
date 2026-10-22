@@ -16,6 +16,8 @@
 
 第二段测试 **粗体**、*斜体*、~~删除线~~、`inline code`、[外部链接](https://www.cam.ac.uk/)、<mark>高亮标记</mark>、<kbd>Ctrl</kbd> + <kbd>P</kbd>、H<sub>2</sub>O、E = mc<sup>2</sup> 和 <abbr title="Portable Document Format">PDF</abbr>。
 
+嵌套格式示例：**不设置 `errno`** 时，程序可能无法判断失败原因。
+
 #### 1.1.1 四级标题
 
 四级标题使用左侧短竖线标记，适合图题、代码文件名等次级结构。
