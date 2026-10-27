@@ -2,7 +2,7 @@
 
 > 这是一份用于检查 `academic-markdown.css` 的样式测试文档。它覆盖标题层级、正文强调、列表、引用、表格、代码、Diff、图片、Alerts 提示块、LaTeX 数学、Mermaid 图表、折叠问答和强制分页等常见 Markdown 元素。
 >
-> 文档的正文和标题使用 Noto Serif / Sans CJK SC，代码使用 Sarasa Mono SC；配色取自 University of Cambridge 官方色板。
+> 文档的正文和标题使用 Noto Serif / Sans CJK SC，代码使用 Sarasa Mono SC；配色采用夜间模式：深蓝黑底、浅蓝强调与高对比度文字，保持 Cambridge 色系的冷静气质。
 
 **关键词**：Markdown · 学术排版 · md-to-pdf · Noto CJK · Sarasa Mono · Mermaid · KaTeX
 
@@ -88,7 +88,7 @@ md-to-pdf example.md --config-file md-to-pdf.config.js
 ```json
 {
   "标题": "学术 Markdown 示例",
-  "配色": "Cambridge Slate",
+  "配色": "Cambridge Slate Night",
   "字体": ["Noto Serif CJK SC", "Sarasa Mono SC"]
 }
 ```
@@ -110,7 +110,7 @@ Diff 代码块用 `diff` 语言标记，新增行和删除行会分别着色：
 
 <figure>
   <img src="assets/example-figure.svg" alt="Markdown 经由 md-to-pdf 渲染为 PDF 的流程图">
-  <figcaption>图 1. 从 Markdown 到 A4 PDF 的渲染流程。示意图使用 Cambridge 色板。</figcaption>
+  <figcaption>图 1. 从 Markdown 到 A4 PDF 的渲染流程。示意图使用夜间模式配色。</figcaption>
 </figure>
 
 ## 6. Alerts 提示块
