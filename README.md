@@ -1,5 +1,7 @@
 # Academic Markdown CSS
 
+[中文](README.md) · [English](README.en.md)
+
 一套中文优先的学术风格 Markdown 样式，配合 [md-to-pdf](https://github.com/simonhaenisch/md-to-pdf) 生成 A4 PDF。
 
 正文与标题使用 Noto Serif / Sans CJK SC，代码使用 Sarasa Mono SC；页面采用首行缩进、两端对齐、三线表、页眉页码和 PDF 书签。
@@ -240,7 +242,8 @@ npm run build:night  # 夜间：example-night.pdf
 │   └── preview-night.png       # 夜间预览
 ├── package.json
 ├── package-lock.json
-└── README.md
+├── README.md
+└── README.en.md
 ```
 
 ## 说明
