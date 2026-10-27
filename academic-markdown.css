@@ -16,7 +16,8 @@
   --muted: #546072;
   --accent: #133844;
   --rule: #232830;
-  --rule-light: #b5bdc8;
+  --rule-light: #8a949e;
+  --link-rule: #6f7b86;
   --wash: #eceef1;
   --code-bg: #eceef1;
 }
@@ -101,7 +102,7 @@ h3 {
 h4 {
   margin: 1.3em 0 0.45em;
   padding-left: 0.6em;
-  border-left: 2pt solid #b5bdc8;
+  border-left: 2pt solid var(--rule-light);
   font-family: "Noto Sans CJK SC", sans-serif;
   font-size: 10.8pt;
   font-weight: 600;
@@ -145,7 +146,7 @@ strong {
 a {
   color: var(--accent);
   text-decoration: none;
-  border-bottom: 0.5pt solid rgba(19, 56, 68, 0.45);
+  border-bottom: 0.5pt solid var(--link-rule);
 }
 
 mark {
@@ -157,7 +158,7 @@ mark {
 kbd {
   padding: 0.05em 0.3em;
   background: #ffffff;
-  border: 0.5pt solid #b5bdc8;
+  border: 0.5pt solid var(--link-rule);
   border-bottom-width: 1.1pt;
   border-radius: 2px;
   color: #232830;
@@ -241,7 +242,7 @@ blockquote {
   margin: 1.2em 0 1.4em;
   padding: 0.9em 1.15em 0.85em 1.25em;
   background: var(--wash);
-  border: 0.5pt solid #b5bdc8;
+  border: 0.5pt solid var(--rule-light);
   border-left: 3pt solid var(--accent);
   color: #232830;
   font-family: "Noto Serif CJK SC", serif;
@@ -289,7 +290,7 @@ pre {
   margin: 1em 0 1.2em;
   padding: 0.85em 1em;
   background: var(--code-bg);
-  border: 0.5pt solid #b5bdc8;
+  border: 0.5pt solid var(--rule-light);
   border-left: 2.5pt solid #546072;
   border-radius: 2px;
   color: #232830;
@@ -481,7 +482,7 @@ hr {
   width: 32%;
   margin: 2.1em auto 1.5em;
   border: 0;
-  border-top: 0.75pt solid #b5bdc8;
+  border-top: 0.75pt solid var(--rule-light);
   break-after: avoid-page;
   page-break-after: avoid;
 }
@@ -529,7 +530,7 @@ details {
   margin: 0.9em 0;
   padding: 0.75em 1em 0.8em 1.1em;
   background: #eceef1;
-  border: 0.5pt solid #b5bdc8;
+  border: 0.5pt solid var(--rule-light);
   border-left: 2.5pt solid var(--accent);
   break-inside: avoid;
   page-break-inside: avoid;

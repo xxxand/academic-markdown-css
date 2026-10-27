@@ -268,7 +268,7 @@ module.exports = {
           text-align: center;
           -webkit-print-color-adjust: exact;
         }
-        .page-footer .slash { color: #b5bdc8; }
+        .page-footer .slash { color: #8a949e; }
       </style>
       <div class="page-footer">
         第 <span class="pageNumber"></span> 页
