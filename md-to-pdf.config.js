@@ -15,6 +15,62 @@ const katexCss = fs
   .replace(/url\((["']?)fonts\//g, (match, quote) => `url(${quote}${KATEX_FONTS_URL}/`);
 
 const MERMAID_BUNDLE = require.resolve("mermaid/dist/mermaid.min.js");
+
+const NIGHT = process.env.MD_THEME === "night";
+const PAGE_COLORS = NIGHT
+  ? {
+      headerText: "#a8c0cc",
+      headerBg: "#0b1b23",
+      headerAccent: "#8ecae6",
+      footerText: "#a8c0cc",
+      footerBg: "#0b1b23",
+      footerSlash: "#4f6b78",
+    }
+  : {
+      headerText: "#546072",
+      headerBg: "transparent",
+      headerAccent: "#546072",
+      footerText: "#546072",
+      footerBg: "transparent",
+      footerSlash: "#8a949e",
+    };
+const MERMAID_VARIABLES = NIGHT
+  ? {
+      fontFamily: '"Noto Sans CJK SC", "Noto Serif CJK SC", sans-serif',
+      primaryColor: "#132a34",
+      primaryTextColor: "#e8f0f4",
+      primaryBorderColor: "#8ecae6",
+      mainBkg: "#132a34",
+      nodeBorder: "#8ecae6",
+      nodeTextColor: "#e8f0f4",
+      textColor: "#e8f0f4",
+      lineColor: "#8ecae6",
+      secondaryColor: "#0f222b",
+      tertiaryColor: "#0b1b23",
+      clusterBkg: "#102631",
+      clusterBorder: "#6f8b98",
+      edgeLabelBackground: "#0b1b23",
+      actorBkg: "#132a34",
+      actorBorder: "#8ecae6",
+      actorTextColor: "#e8f0f4",
+      signalColor: "#8ecae6",
+      signalTextColor: "#e8f0f4",
+      labelBoxBkgColor: "#102631",
+      labelBoxBorderColor: "#6f8b98",
+      labelTextColor: "#e8f0f4",
+    }
+  : {
+      fontFamily: '"Noto Sans CJK SC", "Noto Serif CJK SC", sans-serif',
+      primaryColor: "#eceef1",
+      primaryTextColor: "#232830",
+      primaryBorderColor: "#546072",
+      lineColor: "#546072",
+      secondaryColor: "#f7f8f9",
+      tertiaryColor: "#ffffff",
+      clusterBkg: "#f7f8f9",
+      clusterBorder: "#b5bdc8",
+      edgeLabelBackground: "#ffffff",
+    };
 const ALERT_LABELS = {
   NOTE: "说明 NOTE",
   TIP: "提示 TIP",
@@ -117,30 +173,7 @@ const mermaidRuntime = `
         securityLevel: "strict",
         theme: "neutral",
         fontFamily: '"Noto Sans CJK SC", "Noto Serif CJK SC", sans-serif',
-        themeVariables: {
-          fontFamily: '"Noto Sans CJK SC", "Noto Serif CJK SC", sans-serif',
-          primaryColor: "#132a34",
-          primaryTextColor: "#e8f0f4",
-          primaryBorderColor: "#8ecae6",
-          mainBkg: "#132a34",
-          nodeBorder: "#8ecae6",
-          nodeTextColor: "#e8f0f4",
-          textColor: "#e8f0f4",
-          lineColor: "#8ecae6",
-          secondaryColor: "#0f222b",
-          tertiaryColor: "#0b1b23",
-          clusterBkg: "#102631",
-          clusterBorder: "#6f8b98",
-          edgeLabelBackground: "#0b1b23",
-          actorBkg: "#132a34",
-          actorBorder: "#8ecae6",
-          actorTextColor: "#e8f0f4",
-          signalColor: "#8ecae6",
-          signalTextColor: "#e8f0f4",
-          labelBoxBkgColor: "#102631",
-          labelBoxBorderColor: "#6f8b98",
-          labelTextColor: "#e8f0f4"
-        },
+        themeVariables: ${JSON.stringify(MERMAID_VARIABLES, null, 2)},
         flowchart: {
           htmlLabels: false,
           useMaxWidth: true
@@ -167,7 +200,7 @@ const mermaidRuntimeUrl =
 module.exports = {
   stylesheet: [
     path.resolve(__dirname, "academic-markdown.css"),
-    path.resolve(__dirname, "academic-markdown-night.css"),
+    ...(NIGHT ? [path.resolve(__dirname, "academic-markdown-night.css")] : []),
   ],
   css: katexCss,
   marked_extensions: [
@@ -247,8 +280,8 @@ module.exports = {
           font-size: 7.8pt;
           line-height: 1.4;
           letter-spacing: 0.03em;
-          color: #a8c0cc;
-          background: #0b1b23;
+          color: ${PAGE_COLORS.headerText};
+          background: ${PAGE_COLORS.headerBg};
           -webkit-print-color-adjust: exact;
         }
         .page-header .title {
@@ -262,7 +295,7 @@ module.exports = {
           font-family: "Noto Sans CJK SC", sans-serif;
           font-size: 7.4pt;
           letter-spacing: 0.12em;
-          color: #8ecae6;
+          color: ${PAGE_COLORS.headerAccent};
         }
       </style>
       <div class="page-header">
@@ -280,12 +313,12 @@ module.exports = {
           font-size: 7.8pt;
           line-height: 1.4;
           letter-spacing: 0.05em;
-          color: #a8c0cc;
-          background: #0b1b23;
+          color: ${PAGE_COLORS.footerText};
+          background: ${PAGE_COLORS.footerBg};
           text-align: center;
           -webkit-print-color-adjust: exact;
         }
-        .page-footer .slash { color: #4f6b78; }
+        .page-footer .slash { color: ${PAGE_COLORS.footerSlash}; }
       </style>
       <div class="page-footer">
         第 <span class="pageNumber"></span> 页

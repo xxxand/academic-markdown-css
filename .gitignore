@@ -3,4 +3,5 @@ node_modules/
 *.log
 *.pdf
 !example.pdf
+!example-night.pdf
 example.html

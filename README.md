@@ -4,11 +4,17 @@
 
 正文与标题使用 Noto Serif / Sans CJK SC，代码使用 Sarasa Mono SC；页面采用首行缩进、两端对齐、三线表、页眉页码和 PDF 书签。
 
-当前分支为 **night-mode**：深色页面、浅色文字和浅蓝强调，版式与主分支一致。
+提供浅色与夜间两套主题，版式一致，只切换配色。
 
-![渲染预览](assets/preview.png)
+浅色预览：
 
-[查看示例 PDF](example.pdf) · [查看示例 Markdown](example.md)
+![浅色渲染预览](assets/preview.png)
+
+夜间预览：
+
+![夜间渲染预览](assets/preview-night.png)
+
+[浅色示例 PDF](example.pdf) · [夜间示例 PDF](example-night.pdf) · [查看示例 Markdown](example.md)
 
 ## 特性
 
@@ -24,7 +30,7 @@
 - 任务列表、定义列表、`<details>` 折叠问答
 - 自动展开 `<details>`，便于打印
 - 通用配置：自动读取每个 Markdown 的第一个 `h1` 作为标题
-- Cambridge Slate Night 深色配色，满足 WCAG 2.2 AA 对比度要求
+- Cambridge 浅色 / 夜间两套色板，均满足 WCAG 2.2 AA 对比度要求
 
 ## 环境
 
@@ -61,7 +67,7 @@ npm install
 npm run build
 ```
 
-`npm run build` 会渲染 `example.md`，生成 `example.pdf`。
+`npm run build` 会渲染浅色版 `example.md`，生成 `example.pdf`。
 
 ## 渲染自己的文档
 
@@ -69,7 +75,13 @@ npm run build
 npm run render -- path/to/your-file.md
 ```
 
-输出 PDF 默认生成在 Markdown 文件旁边。也可以直接使用 `md-to-pdf`：
+输出 PDF 默认生成在 Markdown 文件旁边。夜间模式使用：
+
+```bash
+npm run render:night -- path/to/your-file.md
+```
+
+也可以直接使用 `md-to-pdf`：
 
 ```bash
 md-to-pdf your-file.md --config-file md-to-pdf.config.js
@@ -157,15 +169,38 @@ document_title: 我的文档标题
 
 frontmatter 中的 `document_title` 会覆盖自动提取的标题。
 
+## 主题
+
+浅色是默认主题；夜间模式使用同一套版式和字体：
+
+```bash
+npm run build        # 浅色：example.pdf
+npm run build:night  # 夜间：example-night.pdf
+```
+
+夜间模式通过 `md-to-pdf.night.config.js` 加载覆盖层，不影响浅色构建。
+
 ## 自定义
 
 颜色、字号、行距和页边距集中在这些文件：
 
 - `academic-markdown.css`：基础版式与浅色主题
-- `academic-markdown-night.css`：夜间配色的覆盖层
-- `md-to-pdf.config.js`：A4 页边距、页眉页脚、PDF 书签和 Mermaid 主题
+- `academic-markdown-night.css`：夜间配色覆盖层
+- `md-to-pdf.config.js`：浅色主题配置、A4 页边距、页眉页脚、Mermaid 主题
+- `md-to-pdf.night.config.js`：夜间主题配置入口
 
-夜间色板保留了 Cambridge 的深蓝与冷静气质，主要色值：
+浅色主题来自 [University of Cambridge Colour Guidelines](https://www.cam.ac.uk/brand-resources/guidelines/colour)：
+
+| 用途 | 色值 |
+|---|---|
+| 正文 | `#232830` |
+| 强调色 | `#133844` |
+| 辅助灰 | `#546072` |
+| 分隔线 | `#8a949e` |
+| 浅色底 | `#ECEEF1` |
+| 代码辅助色 | `#911449` / `#13553A` / `#29347A` |
+
+夜间主题主要色值：
 
 | 用途 | 色值 |
 |---|---|
@@ -175,16 +210,14 @@ frontmatter 中的 `document_title` 会覆盖自动提取的标题。
 | 强调 / 链接 | `#8ecae6` |
 | 代码底色 | `#0f222b` |
 | 卡片 / 引用底色 | `#132a34` |
-| 警示色 | `#ff9aa8` / `#f5c77e` |
 
 ## 可访问性
 
-- 正文与底色对比度为 15.23:1，次要文字为 9.27:1
-- 链接与强调色对比度为 9.82:1，并保留下划线，不只依赖颜色区分
+- 浅色正文对比度 14.81:1，夜间正文对比度 15.23:1
+- 夜间链接对比度 9.82:1，并保留下划线
 - Alerts 使用类型标题和左侧色条，Diff 保留 `+` / `-` 符号，不只依赖颜色
-- 边框、分隔线和链接下划线使用至少 3:1 的非文本对比度
-
-运行 `npm run check:contrast` 可以复查关键色对的 WCAG 对比度。
+- 链接下划线、`kbd` 边框和分隔线等关键非文本元素均至少 3:1
+- 运行 `npm run check:contrast` 复查夜间主题的关键色对
 
 ## 项目结构
 
@@ -192,14 +225,19 @@ frontmatter 中的 `document_title` 会覆盖自动提取的标题。
 .
 ├── academic-markdown.css       # 学术排版基础样式
 ├── academic-markdown-night.css # 夜间配色覆盖层
-├── md-to-pdf.config.js         # md-to-pdf 夜间配置
+├── md-to-pdf.config.js         # 浅色配置
+├── md-to-pdf.night.config.js   # 夜间配置入口
 ├── example.md                  # 样式示例
-├── example.pdf                 # 示例渲染结果
+├── example.pdf                 # 浅色示例
+├── example-night.pdf           # 夜间示例
 ├── scripts/
+│   ├── build-night.js          # 夜间示例构建
 │   └── check-contrast.mjs      # WCAG 对比度检查
 ├── assets/
-│   ├── example-figure.svg      # 示例图片
-│   └── preview.png             # README 预览图
+│   ├── example-figure.svg      # 浅色示例图
+│   ├── example-figure-night.svg # 夜间示例图
+│   ├── preview.png             # 浅色预览
+│   └── preview-night.png       # 夜间预览
 ├── package.json
 ├── package-lock.json
 └── README.md
@@ -208,6 +246,6 @@ frontmatter 中的 `document_title` 会覆盖自动提取的标题。
 ## 说明
 
 - Mermaid、KaTeX 和 Alerts 都在本地 Chromium 或 Node.js 中处理，不依赖 CDN；Mermaid 图会先渲染成 SVG 再写入 PDF。
-- 夜间模式适合屏幕阅读；打印时会消耗较多墨水，正式纸质版建议切回 `main` 的浅色主题。
+- 夜间模式适合屏幕阅读；打印时会消耗较多墨水，纸质版建议使用浅色主题。
 - 短表保持整表不拆页、长表允许跨页，依赖 Chromium 的 CSS 分页能力。
 - 示例文档仅用于展示样式，可直接替换为自己的 Markdown。

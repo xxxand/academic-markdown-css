@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 300" width="960" height="300" role="img" aria-labelledby="figure-title figure-desc">
+  <title id="figure-title">从 Markdown 到学术 PDF 的渲染流程</title>
+  <desc id="figure-desc">Markdown 文档经过 md-to-pdf 和 academic-markdown.css 排版后输出为 A4 PDF。</desc>
+
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 Z" fill="#8ecae6"/>
+    </marker>
+  </defs>
+
+  <rect width="960" height="300" fill="#0b1b23"/>
+
+  <text x="480" y="44" text-anchor="middle" font-family="'Noto Sans CJK SC', sans-serif" font-size="23" font-weight="700" fill="#e8f0f4">从 Markdown 到学术 PDF</text>
+  <text x="480" y="70" text-anchor="middle" font-family="'Noto Sans CJK SC', sans-serif" font-size="14" letter-spacing="1" fill="#a8c0cc">academic-markdown.css 的渲染流程</text>
+  <line x1="180" y1="88" x2="780" y2="88" stroke="#4f6b78" stroke-width="1"/>
+
+  <rect x="60" y="108" width="220" height="100" rx="7" fill="#132a34" stroke="#8ecae6" stroke-width="1.5"/>
+  <text x="170" y="151" text-anchor="middle" font-family="'Noto Sans CJK SC', sans-serif" font-size="22" font-weight="600" fill="#e8f0f4">Markdown</text>
+  <text x="170" y="178" text-anchor="middle" font-family="'Noto Sans CJK SC', sans-serif" font-size="14" fill="#a8c0cc">内容与结构</text>
+
+  <rect x="370" y="108" width="220" height="100" rx="7" fill="#0f222b" stroke="#8ecae6" stroke-width="1.5"/>
+  <text x="480" y="151" text-anchor="middle" font-family="'Noto Sans CJK SC', sans-serif" font-size="22" font-weight="600" fill="#e8f0f4">md-to-pdf</text>
+  <text x="480" y="178" text-anchor="middle" font-family="'Noto Sans CJK SC', sans-serif" font-size="14" fill="#9ed8c8">Chromium 打印</text>
+
+  <rect x="680" y="108" width="220" height="100" rx="7" fill="#132a34" stroke="#8ecae6" stroke-width="1.5"/>
+  <text x="790" y="151" text-anchor="middle" font-family="'Noto Sans CJK SC', sans-serif" font-size="22" font-weight="600" fill="#e8f0f4">PDF</text>
+  <text x="790" y="178" text-anchor="middle" font-family="'Noto Sans CJK SC', sans-serif" font-size="14" fill="#a8c0cc">A4 · 页码 · 书签</text>
+
+  <line x1="282" y1="158" x2="362" y2="158" stroke="#8ecae6" stroke-width="2.5" marker-end="url(#arrow)"/>
+  <line x1="592" y1="158" x2="672" y2="158" stroke="#8ecae6" stroke-width="2.5" marker-end="url(#arrow)"/>
+
+  <text x="480" y="252" text-anchor="middle" font-family="'Noto Sans CJK SC', sans-serif" font-size="13" fill="#a8c0cc">Noto Serif / Sans CJK SC · Sarasa Mono SC · 三线表 · 引用块 · 代码高亮</text>
+</svg>
