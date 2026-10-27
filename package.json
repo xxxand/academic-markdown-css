@@ -13,7 +13,8 @@
   },
   "scripts": {
     "render": "md-to-pdf --config-file md-to-pdf.config.js",
-    "build": "md-to-pdf example.md --config-file md-to-pdf.config.js"
+    "build": "md-to-pdf example.md --config-file md-to-pdf.config.js",
+    "check:contrast": "node scripts/check-contrast.mjs"
   },
   "keywords": [
     "markdown",

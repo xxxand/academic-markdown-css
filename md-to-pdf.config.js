@@ -119,15 +119,27 @@ const mermaidRuntime = `
         fontFamily: '"Noto Sans CJK SC", "Noto Serif CJK SC", sans-serif',
         themeVariables: {
           fontFamily: '"Noto Sans CJK SC", "Noto Serif CJK SC", sans-serif',
-          primaryColor: "#eceef1",
-          primaryTextColor: "#232830",
-          primaryBorderColor: "#546072",
-          lineColor: "#546072",
-          secondaryColor: "#f7f8f9",
-          tertiaryColor: "#ffffff",
-          clusterBkg: "#f7f8f9",
-          clusterBorder: "#b5bdc8",
-          edgeLabelBackground: "#ffffff"
+          primaryColor: "#132a34",
+          primaryTextColor: "#e8f0f4",
+          primaryBorderColor: "#8ecae6",
+          mainBkg: "#132a34",
+          nodeBorder: "#8ecae6",
+          nodeTextColor: "#e8f0f4",
+          textColor: "#e8f0f4",
+          lineColor: "#8ecae6",
+          secondaryColor: "#0f222b",
+          tertiaryColor: "#0b1b23",
+          clusterBkg: "#102631",
+          clusterBorder: "#6f8b98",
+          edgeLabelBackground: "#0b1b23",
+          actorBkg: "#132a34",
+          actorBorder: "#8ecae6",
+          actorTextColor: "#e8f0f4",
+          signalColor: "#8ecae6",
+          signalTextColor: "#e8f0f4",
+          labelBoxBkgColor: "#102631",
+          labelBoxBorderColor: "#6f8b98",
+          labelTextColor: "#e8f0f4"
         },
         flowchart: {
           htmlLabels: false,
@@ -153,7 +165,10 @@ const mermaidRuntimeUrl =
 
 // Generic configuration: works with any Markdown file in this project.
 module.exports = {
-  stylesheet: [path.resolve(__dirname, "academic-markdown.css")],
+  stylesheet: [
+    path.resolve(__dirname, "academic-markdown.css"),
+    path.resolve(__dirname, "academic-markdown-night.css"),
+  ],
   css: katexCss,
   marked_extensions: [
     markedKatex({
@@ -232,7 +247,8 @@ module.exports = {
           font-size: 7.8pt;
           line-height: 1.4;
           letter-spacing: 0.03em;
-          color: #546072;
+          color: #a8c0cc;
+          background: #0b1b23;
           -webkit-print-color-adjust: exact;
         }
         .page-header .title {
@@ -246,7 +262,7 @@ module.exports = {
           font-family: "Noto Sans CJK SC", sans-serif;
           font-size: 7.4pt;
           letter-spacing: 0.12em;
-          color: #546072;
+          color: #8ecae6;
         }
       </style>
       <div class="page-header">
@@ -264,11 +280,12 @@ module.exports = {
           font-size: 7.8pt;
           line-height: 1.4;
           letter-spacing: 0.05em;
-          color: #546072;
+          color: #a8c0cc;
+          background: #0b1b23;
           text-align: center;
           -webkit-print-color-adjust: exact;
         }
-        .page-footer .slash { color: #8a949e; }
+        .page-footer .slash { color: #4f6b78; }
       </style>
       <div class="page-footer">
         第 <span class="pageNumber"></span> 页

@@ -1,0 +1,277 @@
+/* ==========================================================================
+   Academic Markdown stylesheet — night mode
+   Same layout as academic-markdown.css; loaded after it as a colour layer.
+
+   WCAG 2.2 AA checks (normal text >= 4.5:1, large text and graphics >= 3:1):
+   body text #e8f0f4 on #0b1b23 ......... 15.23:1
+   muted text #a8c0cc on #0b1b23 ........ 9.27:1
+   links #8ecae6 on #0b1b23 ............. 9.82:1
+   alert text #e8f0f4 on #132a34 ........ 12.92:1
+   diff additions #9ed8c8 on #102b26 ..... 9.3:1
+   diff deletions #ff9aa8 on #2a1a20 ..... 8.2:1
+   borders #6f8b98 on #0b1b23 ............ 4.87:1
+   ========================================================================== */
+
+:root {
+  --night-bg: #0b1b23;
+  --night-surface: #132a34;
+  --night-surface-deep: #0f222b;
+  --night-text: #e8f0f4;
+  --night-muted: #a8c0cc;
+  --night-accent: #8ecae6;
+  --night-accent-strong: #c6e6f3;
+  --night-mint: #9ed8c8;
+  --night-warm: #f2c7a2;
+  --night-warning: #f5c77e;
+  --night-danger: #ff9aa8;
+  --night-border: #4f6b78;
+  --night-border-strong: #6f8b98;
+
+  /* Reuse the base stylesheet's semantic variables. */
+  --ink: var(--night-text);
+  --ink-soft: var(--night-muted);
+  --muted: var(--night-muted);
+  --accent: var(--night-accent);
+  --rule: var(--night-accent);
+  --rule-light: var(--night-border);
+  --link-rule: var(--night-border-strong);
+  --wash: var(--night-surface);
+  --code-bg: var(--night-surface-deep);
+}
+
+html,
+body {
+  background: var(--night-bg);
+  color: var(--night-text);
+}
+
+body {
+  background: var(--night-bg);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: var(--night-text);
+}
+
+h1 {
+  border-top-color: var(--night-accent);
+  border-bottom-color: var(--night-border-strong);
+}
+
+h2 {
+  border-bottom-color: var(--night-border-strong);
+}
+
+h4 {
+  border-left-color: var(--night-accent);
+}
+
+p,
+li,
+dd,
+td {
+  color: var(--night-text);
+}
+
+strong {
+  color: var(--night-text);
+}
+
+a {
+  color: var(--night-accent);
+  border-bottom-color: var(--night-border-strong);
+}
+
+mark {
+  background: var(--night-warm);
+  color: var(--night-bg);
+}
+
+kbd {
+  background: var(--night-surface);
+  border-color: var(--night-border-strong);
+  color: var(--night-text);
+}
+
+small,
+figcaption {
+  color: var(--night-muted);
+}
+
+blockquote {
+  background: var(--night-surface);
+  border-color: var(--night-border);
+  border-left-color: var(--night-accent);
+  color: var(--night-text);
+}
+
+/* Inline code and code blocks */
+body code {
+  background: var(--night-surface-deep);
+  color: var(--night-text);
+}
+
+pre {
+  background: var(--night-surface-deep);
+  border-color: var(--night-border);
+  border-left-color: var(--night-accent);
+  color: var(--night-text);
+}
+
+body pre .hljs-comment,
+body pre .hljs-quote {
+  color: var(--night-muted);
+}
+
+body pre .hljs-keyword,
+body pre .hljs-selector-tag,
+body pre .hljs-type,
+body pre .hljs-template-tag,
+body pre .hljs-template-variable {
+  color: var(--night-accent);
+}
+
+body pre .hljs-string,
+body pre .hljs-regexp,
+body pre .hljs-attr {
+  color: var(--night-mint);
+}
+
+body pre .hljs-number,
+body pre .hljs-literal,
+body pre .hljs-variable,
+body pre .hljs-operator {
+  color: var(--night-warm);
+}
+
+body pre .hljs-title,
+body pre .hljs-title.function_,
+body pre .hljs-section {
+  color: var(--night-accent-strong);
+}
+
+body pre .hljs-built_in,
+body pre .hljs-symbol {
+  color: var(--night-danger);
+}
+
+body pre .hljs-meta {
+  color: var(--night-muted);
+}
+
+/* Tables */
+table thead th {
+  color: var(--night-text);
+}
+
+table thead th,
+table tbody tr:last-child td {
+  border-color: var(--night-accent);
+}
+
+table caption {
+  color: var(--night-muted);
+}
+
+/* Details */
+details {
+  background: var(--night-surface);
+  border-color: var(--night-border);
+  border-left-color: var(--night-accent);
+}
+
+summary,
+dt {
+  color: var(--night-text);
+}
+
+details p {
+  color: var(--night-text);
+}
+
+/* Alerts */
+.alert {
+  color: var(--night-text);
+}
+
+.alert-note {
+  --alert-color: var(--night-accent);
+  --alert-bg: #102b37;
+  --alert-border: var(--night-border);
+}
+
+.alert-tip {
+  --alert-color: var(--night-mint);
+  --alert-bg: #0f2b2a;
+  --alert-border: var(--night-border);
+}
+
+.alert-important {
+  --alert-color: var(--night-warm);
+  --alert-bg: #2a1a20;
+  --alert-border: #6f4b55;
+}
+
+.alert-warning {
+  --alert-color: var(--night-warning);
+  --alert-bg: #2b2417;
+  --alert-border: #6f5c3a;
+}
+
+.alert-caution {
+  --alert-color: var(--night-danger);
+  --alert-bg: #2a1a20;
+  --alert-border: #6f4b55;
+}
+
+.alert-title {
+  color: var(--alert-color);
+}
+
+/* Mermaid is rendered by the browser; the SVG itself receives matching
+   theme variables in md-to-pdf.config.js. */
+pre.mermaid {
+  background: transparent;
+}
+
+pre.mermaid.mermaid-error {
+  background: #2a1a20;
+  border-color: #6f4b55;
+  border-left-color: var(--night-danger);
+  color: var(--night-danger);
+}
+
+/* Diff */
+body pre .hljs-addition {
+  color: var(--night-mint);
+  background: #102b26;
+}
+
+body pre .hljs-deletion {
+  color: var(--night-danger);
+  background: #2a1a20;
+}
+
+body pre .hljs-meta {
+  color: var(--night-muted);
+}
+
+::selection {
+  background: var(--night-accent);
+  color: var(--night-bg);
+}
+
+@media print {
+  a {
+    color: var(--night-accent);
+  }
+}
+
+@page {
+  background: #0b1b23;
+}

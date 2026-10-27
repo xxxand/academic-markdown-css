@@ -4,6 +4,8 @@
 
 正文与标题使用 Noto Serif / Sans CJK SC，代码使用 Sarasa Mono SC；页面采用首行缩进、两端对齐、三线表、页眉页码和 PDF 书签。
 
+当前分支为 **night-mode**：深色页面、浅色文字和浅蓝强调，版式与主分支一致。
+
 ![渲染预览](assets/preview.png)
 
 [查看示例 PDF](example.pdf) · [查看示例 Markdown](example.md)
@@ -22,7 +24,7 @@
 - 任务列表、定义列表、`<details>` 折叠问答
 - 自动展开 `<details>`，便于打印
 - 通用配置：自动读取每个 Markdown 的第一个 `h1` 作为标题
-- Cambridge 官方色板，配色来源写在 CSS 顶部
+- Cambridge Slate Night 深色配色，满足 WCAG 2.2 AA 对比度要求
 
 ## 环境
 
@@ -157,40 +159,47 @@ frontmatter 中的 `document_title` 会覆盖自动提取的标题。
 
 ## 自定义
 
-颜色、字号、行距和页边距集中在这两个文件：
+颜色、字号、行距和页边距集中在这些文件：
 
-- `academic-markdown.css`：`:root` 里的颜色变量、正文与标题字号、行距
-- `md-to-pdf.config.js`：A4 页边距、页眉页脚、PDF 书签
+- `academic-markdown.css`：基础版式与浅色主题
+- `academic-markdown-night.css`：夜间配色的覆盖层
+- `md-to-pdf.config.js`：A4 页边距、页眉页脚、PDF 书签和 Mermaid 主题
 
-色板来自 [University of Cambridge Colour Guidelines](https://www.cam.ac.uk/brand-resources/guidelines/colour)，主要色值：
+夜间色板保留了 Cambridge 的深蓝与冷静气质，主要色值：
 
 | 用途 | 色值 |
 |---|---|
-| 正文 | `#232830` |
-| 强调色 | `#133844` |
-| 辅助灰 | `#546072` |
-| 分隔线 | `#B5BDC8` |
-| 浅色底 | `#ECEEF1` |
-| 代码辅助色 | `#911449` / `#13553A` / `#29347A` |
+| 页面底色 | `#0b1b23` |
+| 正文 | `#e8f0f4` |
+| 次要文字 | `#a8c0cc` |
+| 强调 / 链接 | `#8ecae6` |
+| 代码底色 | `#0f222b` |
+| 卡片 / 引用底色 | `#132a34` |
+| 警示色 | `#ff9aa8` / `#f5c77e` |
 
 ## 可访问性
 
-- 正文与白底对比度为 14.81:1，次要文字为 6.38:1，满足 WCAG 2.2 AA 的文本对比度要求
-- 链接保留下划线，不仅依赖颜色区分
+- 正文与底色对比度为 15.23:1，次要文字为 9.27:1
+- 链接与强调色对比度为 9.82:1，并保留下划线，不只依赖颜色区分
 - Alerts 使用类型标题和左侧色条，Diff 保留 `+` / `-` 符号，不只依赖颜色
-- 链接下划线、`kbd` 边框和浅色分隔线已提升到至少 3:1 的非文本对比度
+- 边框、分隔线和链接下划线使用至少 3:1 的非文本对比度
+
+运行 `npm run check:contrast` 可以复查关键色对的 WCAG 对比度。
 
 ## 项目结构
 
 ```text
 .
-├── academic-markdown.css     # 学术排版样式
-├── md-to-pdf.config.js       # md-to-pdf 通用配置
-├── example.md                # 样式示例
-├── example.pdf               # 示例渲染结果
+├── academic-markdown.css       # 学术排版基础样式
+├── academic-markdown-night.css # 夜间配色覆盖层
+├── md-to-pdf.config.js         # md-to-pdf 夜间配置
+├── example.md                  # 样式示例
+├── example.pdf                 # 示例渲染结果
+├── scripts/
+│   └── check-contrast.mjs      # WCAG 对比度检查
 ├── assets/
-│   ├── example-figure.svg    # 示例图片
-│   └── preview.png           # README 预览图
+│   ├── example-figure.svg      # 示例图片
+│   └── preview.png             # README 预览图
 ├── package.json
 ├── package-lock.json
 └── README.md
@@ -199,5 +208,6 @@ frontmatter 中的 `document_title` 会覆盖自动提取的标题。
 ## 说明
 
 - Mermaid、KaTeX 和 Alerts 都在本地 Chromium 或 Node.js 中处理，不依赖 CDN；Mermaid 图会先渲染成 SVG 再写入 PDF。
+- 夜间模式适合屏幕阅读；打印时会消耗较多墨水，正式纸质版建议切回 `main` 的浅色主题。
 - 短表保持整表不拆页、长表允许跨页，依赖 Chromium 的 CSS 分页能力。
 - 示例文档仅用于展示样式，可直接替换为自己的 Markdown。
