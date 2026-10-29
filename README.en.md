@@ -157,4 +157,4 @@ See [example.md](example.md) for complete runnable examples.
 
 ## License
 
-UNLICENSED — personal project, all rights reserved. Do not redistribute or use commercially without permission.
+MIT License — free to use, modify, and distribute with the copyright notice preserved. See [LICENSE](LICENSE).

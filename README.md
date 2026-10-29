@@ -157,4 +157,4 @@ table:nth-of-type(2) th:nth-child(3) { width: 48%; }
 
 ## License
 
-UNLICENSED — 个人项目，保留所有权利。未经授权请勿再分发或用于商业用途。
+MIT License — 可自由使用、修改、分发，保留版权声明。详见 [LICENSE](LICENSE)。

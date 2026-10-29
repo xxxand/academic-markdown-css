@@ -58,5 +58,5 @@
       "puppeteer": "25.15.0"
     }
   },
-  "license": "UNLICENSED"
+  "license": "MIT"
 }
