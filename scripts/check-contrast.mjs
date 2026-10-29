@@ -16,6 +16,23 @@ const pairs = [
   ["diff deletion", "#ff9aa8", "#2a1a20", 4.5],
   ["borders", "#4f6b78", "#0b1b23", 3],
   ["link underline", "#6f8b98", "#0b1b23", 3],
+  ["mono body text", "#111111", "#ffffff", 4.5],
+  ["mono muted text", "#555555", "#ffffff", 4.5],
+  ["mono links", "#000000", "#ffffff", 4.5],
+  ["mono code comment", "#555555", "#f5f5f5", 4.5],
+  ["mono code keyword", "#000000", "#f5f5f5", 4.5],
+  ["mono code string", "#333333", "#f5f5f5", 4.5],
+  ["mono code number", "#222222", "#f5f5f5", 4.5],
+  ["mono note title", "#000000", "#f5f5f5", 4.5],
+  ["mono note body", "#111111", "#f5f5f5", 4.5],
+  ["mono tip title", "#222222", "#efefef", 4.5],
+  ["mono important title", "#111111", "#e8e8e8", 4.5],
+  ["mono warning title", "#000000", "#e0e0e0", 4.5],
+  ["mono caution title", "#000000", "#d8d8d8", 4.5],
+  ["mono diff addition", "#000000", "#e6e6e6", 4.5],
+  ["mono diff deletion", "#000000", "#d0d0d0", 4.5],
+  ["mono borders", "#888888", "#ffffff", 3],
+  ["mono link underline", "#666666", "#ffffff", 3],
 ];
 
 function luminance(hex) {

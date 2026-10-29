@@ -1,0 +1,274 @@
+/* ==========================================================================
+   Academic Markdown stylesheet — monochrome mode
+   Same layout as academic-markdown.css; loaded after it as a colour layer.
+
+   Only black, white, and neutral greys are used. WCAG 2.2 AA checks
+   (normal text >= 4.5:1, large text and graphics >= 3:1):
+   body text #111111 on #ffffff ......... 18.88:1
+   muted text #555555 on #ffffff ........ 7.46:1
+   links #000000 on #ffffff ............. 21.00:1
+   code text #111111 on #f5f5f5 ......... 17.32:1
+   borders #888888 on #ffffff ........... 3.54:1
+   link underline #666666 on #ffffff .... 5.74:1
+   ========================================================================== */
+
+:root {
+  --mono-bg: #ffffff;
+  --mono-surface: #f5f5f5;
+  --mono-surface-deep: #eeeeee;
+  --mono-text: #111111;
+  --mono-muted: #555555;
+  --mono-accent: #000000;
+  --mono-border: #888888;
+  --mono-border-strong: #666666;
+
+  /* Reuse the base stylesheet's semantic variables. */
+  --ink: var(--mono-text);
+  --ink-soft: var(--mono-muted);
+  --muted: var(--mono-muted);
+  --accent: var(--mono-accent);
+  --rule: #000000;
+  --rule-light: var(--mono-border);
+  --link-rule: var(--mono-border-strong);
+  --wash: var(--mono-surface);
+  --code-bg: var(--mono-surface);
+}
+
+html,
+body {
+  background: var(--mono-bg);
+  color: var(--mono-text);
+}
+
+body {
+  background: var(--mono-bg);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: var(--mono-text);
+}
+
+h1 {
+  border-top-color: #000000;
+  border-bottom-color: var(--mono-border-strong);
+}
+
+h2 {
+  border-bottom-color: var(--mono-border);
+}
+
+h4 {
+  border-left-color: #000000;
+}
+
+strong {
+  color: #000000;
+}
+
+a {
+  color: #000000;
+  border-bottom-color: var(--mono-border-strong);
+}
+
+mark {
+  background: #e6e6e6;
+  color: #000000;
+}
+
+kbd {
+  background: #ffffff;
+  border-color: var(--mono-border-strong);
+  color: #000000;
+}
+
+small,
+figcaption {
+  color: var(--mono-muted);
+}
+
+li::marker {
+  color: #000000;
+}
+
+blockquote {
+  background: var(--mono-surface);
+  border-color: var(--mono-border);
+  border-left-color: #000000;
+  color: var(--mono-text);
+}
+
+/* Inline code and code blocks */
+body code {
+  background: var(--mono-surface-deep);
+  color: #000000;
+}
+
+pre {
+  background: var(--mono-surface);
+  border-color: var(--mono-border);
+  border-left-color: #000000;
+  color: var(--mono-text);
+}
+
+body pre .hljs-comment,
+body pre .hljs-quote {
+  color: var(--mono-muted);
+}
+
+body pre .hljs-keyword,
+body pre .hljs-selector-tag,
+body pre .hljs-type,
+body pre .hljs-template-tag,
+body pre .hljs-template-variable {
+  color: #000000;
+}
+
+body pre .hljs-string,
+body pre .hljs-regexp,
+body pre .hljs-attr {
+  color: #333333;
+}
+
+body pre .hljs-number,
+body pre .hljs-literal,
+body pre .hljs-variable,
+body pre .hljs-operator {
+  color: #222222;
+}
+
+body pre .hljs-title,
+body pre .hljs-title.function_,
+body pre .hljs-section {
+  color: #000000;
+}
+
+body pre .hljs-built_in,
+body pre .hljs-symbol {
+  color: #333333;
+}
+
+body pre .hljs-meta {
+  color: var(--mono-muted);
+}
+
+/* Tables */
+table thead th {
+  color: #000000;
+}
+
+table thead th,
+table tbody tr:last-child td {
+  border-color: #000000;
+}
+
+table caption {
+  color: var(--mono-muted);
+}
+
+hr {
+  border-top-color: var(--mono-border);
+}
+
+figure img {
+  border-color: var(--mono-border);
+}
+
+/* Details and definition lists */
+details {
+  background: var(--mono-surface);
+  border-color: var(--mono-border);
+  border-left-color: #000000;
+}
+
+summary,
+dt {
+  color: var(--mono-text);
+}
+
+details p {
+  color: var(--mono-text);
+}
+
+/* Alerts: the title text and left rule carry the type; backgrounds only add
+   a second, non-colour cue. */
+.alert {
+  color: var(--mono-text);
+}
+
+.alert-note {
+  --alert-color: #000000;
+  --alert-bg: #f5f5f5;
+  --alert-border: #888888;
+}
+
+.alert-tip {
+  --alert-color: #222222;
+  --alert-bg: #efefef;
+  --alert-border: #777777;
+}
+
+.alert-important {
+  --alert-color: #111111;
+  --alert-bg: #e8e8e8;
+  --alert-border: #666666;
+}
+
+.alert-warning {
+  --alert-color: #000000;
+  --alert-bg: #e0e0e0;
+  --alert-border: #555555;
+}
+
+.alert-caution {
+  --alert-color: #000000;
+  --alert-bg: #d8d8d8;
+  --alert-border: #000000;
+}
+
+.alert-title {
+  color: var(--alert-color);
+}
+
+/* Mermaid is rendered by the browser; the SVG itself receives matching
+   greyscale theme variables in md-to-pdf.config.js. */
+pre.mermaid {
+  background: transparent;
+}
+
+pre.mermaid.mermaid-error {
+  background: var(--mono-surface-deep);
+  border-color: var(--mono-border);
+  border-left-color: #000000;
+  color: #000000;
+}
+
+/* Diff: keep the + / - markers and use two distinct grey surfaces. */
+body pre .hljs-addition {
+  color: #000000;
+  background: #e6e6e6;
+}
+
+body pre .hljs-deletion {
+  color: #000000;
+  background: #d0d0d0;
+}
+
+body pre .hljs-meta {
+  color: var(--mono-muted);
+}
+
+::selection {
+  background: #d0d0d0;
+  color: #000000;
+}
+
+@media print {
+  a {
+    color: var(--mono-text);
+  }
+}
