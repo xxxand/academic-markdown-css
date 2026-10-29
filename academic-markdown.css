@@ -1,7 +1,7 @@
 /* ==========================================================================
    Academic Markdown stylesheet
    A serif, book-like layout for A4 PDF output via md-to-pdf.
-   Body and headings use Noto CJK SC; code uses Sarasa Mono SC.
+   Body and headings use Noto Serif SC / Noto Sans SC; code uses Sarasa Mono SC.
 
    Colour palette: University of Cambridge brand colours
    Source: https://www.cam.ac.uk/brand-resources/guidelines/colour
@@ -11,6 +11,10 @@
    ========================================================================== */
 
 :root {
+  --font-serif: "Noto Serif SC", "Noto Serif CJK SC", "Noto Sans", serif;
+  --font-sans: "Noto Sans SC", "Noto Sans CJK SC", "Noto Sans", sans-serif;
+  --font-mono: "Sarasa Mono SC", "Noto Sans Mono CJK SC", monospace;
+
   --ink: #232830;
   --ink-soft: #546072;
   --muted: #546072;
@@ -35,14 +39,12 @@ body {
   padding: 0;
   background: #fff;
   color: var(--ink);
-  font-family: "Noto Serif CJK SC", "Noto Sans CJK SC", serif;
+  font-family: var(--font-serif);
   font-size: 10.5pt;
   line-height: 1.8;
   text-align: justify;
-  text-justify: inter-ideograph;
   font-kerning: normal;
   font-variant-ligatures: common-ligatures;
-  -webkit-font-smoothing: antialiased;
 }
 
 /* --------------------------------------------------------------------------
@@ -65,7 +67,7 @@ h1 {
   padding: 1.1em 0 1em;
   border-top: 4pt double var(--rule);
   border-bottom: 0.7pt solid var(--rule);
-  font-family: "Noto Serif CJK SC", serif;
+  font-family: var(--font-serif);
   font-size: 20.5pt;
   font-weight: 700;
   line-height: 1.4;
@@ -83,7 +85,7 @@ h2 {
   margin: 1.7em 0 0.8em;
   padding-bottom: 0.32em;
   border-bottom: 0.75pt solid var(--rule-light);
-  font-family: "Noto Sans CJK SC", sans-serif;
+  font-family: var(--font-sans);
   font-size: 15pt;
   font-weight: 700;
   line-height: 1.5;
@@ -92,7 +94,7 @@ h2 {
 
 h3 {
   margin: 1.55em 0 0.55em;
-  font-family: "Noto Sans CJK SC", sans-serif;
+  font-family: var(--font-sans);
   font-size: 12.3pt;
   font-weight: 600;
   line-height: 1.55;
@@ -103,7 +105,7 @@ h4 {
   margin: 1.3em 0 0.45em;
   padding-left: 0.6em;
   border-left: 2pt solid var(--rule-light);
-  font-family: "Noto Sans CJK SC", sans-serif;
+  font-family: var(--font-sans);
   font-size: 10.8pt;
   font-weight: 600;
   line-height: 1.55;
@@ -113,7 +115,7 @@ h4 {
 h5 {
   margin: 1.2em 0 0.35em;
   padding: 0;
-  font-family: "Noto Sans CJK SC", sans-serif;
+  font-family: var(--font-sans);
   font-size: 10.5pt;
   font-weight: 600;
 }
@@ -122,7 +124,7 @@ h6 {
   margin: 1em 0 0.3em;
   padding: 0;
   color: var(--muted);
-  font-family: "Noto Sans CJK SC", sans-serif;
+  font-family: var(--font-sans);
   font-size: 10pt;
   font-weight: 600;
 }
@@ -162,7 +164,7 @@ kbd {
   border-bottom-width: 1.1pt;
   border-radius: 2px;
   color: #232830;
-  font-family: "Sarasa Mono SC", "Noto Sans Mono CJK SC", monospace;
+  font-family: var(--font-mono);
   font-size: 0.82em;
 }
 
@@ -211,7 +213,7 @@ li > p {
 }
 
 li::marker {
-  font-family: "Noto Sans CJK SC", sans-serif;
+  font-family: var(--font-sans);
   font-size: 0.9em;
   color: var(--accent);
 }
@@ -245,7 +247,7 @@ blockquote {
   border: 0.5pt solid var(--rule-light);
   border-left: 3pt solid var(--accent);
   color: #232830;
-  font-family: "Noto Serif CJK SC", serif;
+  font-family: var(--font-serif);
   font-size: 9.9pt;
   font-style: normal;
   line-height: 1.75;
@@ -282,20 +284,20 @@ body code {
   border: 0;
   border-radius: 2px;
   color: #232830;
-  font-family: "Sarasa Mono SC", "Noto Sans Mono CJK SC", monospace;
+  font-family: var(--font-mono);
   font-size: 0.86em;
 }
 
 pre {
   margin: 1em 0 1.2em;
-  padding: 0.85em 1em;
+  padding: 0.85em 0.9em;
   background: var(--code-bg);
   border: 0.5pt solid var(--rule-light);
   border-left: 2.5pt solid #546072;
   border-radius: 2px;
   color: #232830;
-  font-family: "Sarasa Mono SC", "Noto Sans Mono CJK SC", monospace;
-  font-size: 8.6pt;
+  font-family: var(--font-mono);
+  font-size: 8.2pt;
   line-height: 1.62;
   white-space: pre-wrap;
   overflow-wrap: break-word;
@@ -409,9 +411,14 @@ p:has(+ table) {
   page-break-after: avoid;
 }
 
-table:not(:has(tbody tr:nth-child(9))) {
+table:not(:has(tbody tr:nth-child(9))):not(.may-break) {
   break-inside: avoid;
   page-break-inside: avoid;
+}
+
+table.may-break {
+  break-inside: auto;
+  page-break-inside: auto;
 }
 
 thead {
@@ -438,7 +445,7 @@ table thead th {
   border-bottom: 0.7pt solid var(--rule);
   background: transparent;
   color: #232830;
-  font-family: "Noto Sans CJK SC", sans-serif;
+  font-family: var(--font-sans);
   font-size: 9.2pt;
   font-weight: 600;
 }
@@ -469,7 +476,7 @@ table caption {
   caption-side: top;
   margin-bottom: 0.4em;
   color: var(--muted);
-  font-family: "Noto Sans CJK SC", sans-serif;
+  font-family: var(--font-sans);
   font-size: 9pt;
   text-align: left;
 }
@@ -507,7 +514,7 @@ figure img {
 figcaption {
   margin-top: 0.55em;
   color: var(--muted);
-  font-family: "Noto Sans CJK SC", sans-serif;
+  font-family: var(--font-sans);
   font-size: 9pt;
   text-align: center;
 }
@@ -518,7 +525,7 @@ dl {
 
 dt {
   color: #232830;
-  font-family: "Noto Sans CJK SC", sans-serif;
+  font-family: var(--font-sans);
   font-weight: 600;
 }
 
@@ -538,7 +545,7 @@ details {
 
 summary {
   color: #232830;
-  font-family: "Noto Sans CJK SC", sans-serif;
+  font-family: var(--font-sans);
   font-size: 9.9pt;
   font-weight: 600;
   line-height: 1.6;
@@ -610,7 +617,7 @@ details p {
 .alert-title {
   margin: 0 0 0.35em;
   color: var(--alert-color);
-  font-family: "Noto Sans CJK SC", sans-serif;
+  font-family: var(--font-sans);
   font-size: 9pt;
   font-weight: 700;
   letter-spacing: 0.08em;
@@ -661,7 +668,7 @@ pre.mermaid {
   background: transparent;
   border: 0;
   border-radius: 0;
-  font-family: "Noto Sans CJK SC", "Noto Serif CJK SC", sans-serif;
+  font-family: var(--font-sans);
   text-align: center;
   white-space: normal;
   overflow: visible;
@@ -693,7 +700,7 @@ pre.mermaid.mermaid-error {
   border: 0.5pt solid #d9b7c5;
   border-left: 2.5pt solid #911449;
   color: #911449;
-  font-family: "Noto Sans CJK SC", sans-serif;
+  font-family: var(--font-sans);
   font-size: 9pt;
   line-height: 1.6;
   text-align: left;
@@ -732,6 +739,17 @@ body pre .hljs-meta {
 .page-break {
   break-after: page;
   page-break-after: always;
+}
+
+/* Tall blocks are marked by the injected script so they can split instead of
+   pushing a whole page of whitespace. Table rows still stay intact. */
+pre.may-break,
+blockquote.may-break,
+details.may-break {
+  break-inside: auto;
+  page-break-inside: auto;
+  orphans: 3;
+  widows: 3;
 }
 
 ::selection {

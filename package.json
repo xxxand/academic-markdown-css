@@ -2,7 +2,7 @@
   "name": "academic-markdown-css",
   "version": "0.1.0",
   "private": true,
-  "description": "Academic-style Markdown CSS for md-to-pdf, with Noto CJK SC, Sarasa Mono SC, Mermaid, KaTeX, alerts, and diff highlighting.",
+  "description": "Chinese-first A4 academic PDF themes for md-to-pdf, with light, night, and monochrome palettes, Noto Serif SC / Noto Sans SC, Sarasa Mono SC, Mermaid, KaTeX, alerts, and diff highlighting.",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/xxxand/academic-markdown-css.git"
@@ -14,32 +14,49 @@
   "scripts": {
     "render": "md-to-pdf --config-file md-to-pdf.config.js",
     "render:night": "md-to-pdf --config-file md-to-pdf.night.config.js",
+    "render:mono": "md-to-pdf --config-file md-to-pdf.mono.config.js",
     "build": "md-to-pdf example.md --config-file md-to-pdf.config.js",
     "build:night": "node scripts/build-night.js",
+    "build:mono": "node scripts/build-mono.js",
     "check:contrast": "node scripts/check-contrast.mjs"
   },
   "keywords": [
     "markdown",
     "css",
-    "academic",
     "pdf",
     "md-to-pdf",
-    "noto-cjk",
+    "academic",
+    "typesetting",
+    "cjk",
+    "chinese-typography",
+    "a4",
+    "print-css",
+    "puppeteer",
     "mermaid",
     "katex",
+    "light-theme",
+    "dark-theme",
+    "monochrome",
     "alerts",
-    "diff",
-    "typesetting"
+    "diff"
   ],
   "engines": {
-    "node": ">=18"
+    "node": ">=22.12.0"
   },
   "devDependencies": {
-    "katex": "^0.16.47",
-    "marked": "^4.3.0",
-    "marked-katex-extension": "^5.1.13",
-    "md-to-pdf": "^5.2.5",
-    "mermaid": "^11.17.2"
+    "highlight.js": "11.12.0",
+    "katex": "0.16.47",
+    "marked": "18.1.2",
+    "marked-katex-extension": "5.1.13",
+    "md-to-pdf": "5.2.5",
+    "mermaid": "11.17.2",
+    "puppeteer": "25.15.0"
+  },
+  "overrides": {
+    "md-to-pdf": {
+      "marked": "18.1.2",
+      "puppeteer": "25.15.0"
+    }
   },
   "license": "UNLICENSED"
 }
