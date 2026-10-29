@@ -22,7 +22,9 @@
     "build:all": "npm run build && npm run build:night && npm run build:mono",
     "check:contrast": "node scripts/check-contrast.mjs",
     "verify": "node scripts/verify.js",
-    "verify:examples": "node scripts/verify.js --expect-katex example.pdf example-night.pdf example-mono.pdf"
+    "verify:examples": "node scripts/verify.js --expect-katex example.pdf example-night.pdf example-mono.pdf",
+    "test": "node --test \"test/*.test.js\"",
+    "test:unit": "node --test test/markdown.test.js test/verify.test.js test/cli.test.js"
   },
   "keywords": [
     "markdown",
