@@ -4,7 +4,7 @@
 
 ```mermaid
 flowchart LR
-    A[读取输入] --> B{格式正确?}
+    A[Markdown 源文件] --> B{格式正确?}
     B -- 是 --> C[生成 PDF]
     B -- 否 --> D[报告错误]
 ```

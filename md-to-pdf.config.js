@@ -301,6 +301,10 @@ ${this.parser.parse(token.tokens)}
 // makes Puppeteer's addScriptTag wait for Mermaid (and KaTeX fonts) before the
 // PDF is printed. It also marks blocks that are tall enough to break across
 // pages, measured at the final print content width.
+//
+// Mermaid 12 defaults to the neo look, whose drop shadows are rasterised into
+// the PDF, so the classic look is kept. Its default wrappingWidth (200) also
+// breaks short CJK labels such as "Markdown 源文件" into a lone last character.
 const pageRuntime = `
   await document.fonts.ready;
 
@@ -313,10 +317,12 @@ const pageRuntime = `
         startOnLoad: false,
         securityLevel: "strict",
         theme: "neutral",
+        look: "classic",
         fontFamily: ${JSON.stringify(DIAGRAM_FONT)},
         themeVariables: ${JSON.stringify(MERMAID_VARIABLES, null, 2)},
         flowchart: {
           htmlLabels: false,
+          wrappingWidth: 400,
           useMaxWidth: true
         },
         sequence: {

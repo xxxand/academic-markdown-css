@@ -55,16 +55,13 @@
     "marked": "18.1.2",
     "marked-katex-extension": "5.1.13",
     "md-to-pdf": "5.2.5",
-    "mermaid": "11.17.2",
+    "mermaid": "12.2.0",
     "puppeteer": "25.15.0"
   },
   "overrides": {
     "md-to-pdf": {
       "marked": "18.1.2",
       "puppeteer": "25.15.0"
-    },
-    "mermaid": {
-      "katex": "$katex"
     }
   },
   "license": "MIT"
