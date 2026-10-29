@@ -19,7 +19,10 @@
     "build": "md-to-pdf example.md --config-file md-to-pdf.config.js",
     "build:night": "node scripts/build-night.js",
     "build:mono": "node scripts/build-mono.js",
-    "check:contrast": "node scripts/check-contrast.mjs"
+    "build:all": "npm run build && npm run build:night && npm run build:mono",
+    "check:contrast": "node scripts/check-contrast.mjs",
+    "verify": "node scripts/verify.js",
+    "verify:examples": "node scripts/verify.js --expect-katex example.pdf example-night.pdf example-mono.pdf"
   },
   "keywords": [
     "markdown",
