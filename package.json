@@ -15,6 +15,7 @@
     "render": "md-to-pdf --config-file md-to-pdf.config.js",
     "render:night": "md-to-pdf --config-file md-to-pdf.night.config.js",
     "render:mono": "md-to-pdf --config-file md-to-pdf.mono.config.js",
+    "render:all": "node scripts/render.js",
     "build": "md-to-pdf example.md --config-file md-to-pdf.config.js",
     "build:night": "node scripts/build-night.js",
     "build:mono": "node scripts/build-mono.js",
