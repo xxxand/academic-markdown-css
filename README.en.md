@@ -43,9 +43,14 @@ npm run render:night -- path/to/your-file.md
 npm run render:mono -- path/to/your-file.md
 ```
 
-The PDF is written next to the Markdown file. `md-to-pdf` 5.2.5 has no `--dest`; use the Node API to write elsewhere (see `scripts/build-night.js`).
+The PDF is written next to the Markdown file. To render in bulk, choose a theme, or write to another directory, use `render:all`:
 
-If the Markdown file is outside this project, point `--basedir` at the directory that contains it. KaTeX fonts are inlined, so `--basedir` no longer breaks maths fonts; images and other relative assets still need to live under that directory.
+```bash
+npm run render:all -- docs/ --outdir dist                      # every *.md in the directory
+npm run render:all -- a.md b.md --theme night --outdir dist    # light / night / mono
+```
+
+Each file's own directory is its `basedir` by default, so images and other relative assets can sit next to the Markdown file. To reference assets in a parent directory, pass `--basedir` with a common directory that contains every input. `render`, `render:night`, and `render:mono` are the plain `md-to-pdf` commands: for a file outside this project, add `--basedir <the file's directory>` yourself. KaTeX fonts are inlined, so `basedir` does not affect maths fonts.
 
 In a non-interactive WSL/CI shell, load nvm first:
 
@@ -147,6 +152,18 @@ See [example.md](example.md) for complete runnable examples.
 - Links keep an underline; alerts have text labels, and diff blocks keep `+` / `-`, so information is not conveyed by colour alone
 - Run `npm run check:contrast` to check the key night and monochrome colour pairs
 
+## Verification
+
+```bash
+npm run verify -- dist/      # check PDFs: Type 3 fonts, literal **, blank pages
+npm run build:all            # regenerate the three example PDFs
+npm run verify:examples      # check the example PDFs and require embedded KaTeX fonts
+npm test                     # all tests: needs Chromium, the fonts, and poppler
+npm run test:unit            # tests that need no browser; this is what CI runs
+```
+
+`verify` needs poppler (`pdfinfo`, `pdffonts`, `pdftotext`) and exits with 1 when any check fails. A blank page is one with no text inside the content box, so a page holding only an image without text is reported too. Add `--allow-asterisks` for documents that show `**` itself, such as ones about Markdown syntax.
+
 ## Notes
 
 - Mermaid, KaTeX, and Alerts are processed locally; no CDN is required.
@@ -154,6 +171,7 @@ See [example.md](example.md) for complete runnable examples.
 - Short tables stay on one page where possible; tables, code blocks, and quotes taller than about 40% of the content area may span pages.
 - Code blocks use `pre-wrap`; Chromium does not apply a hanging indent to soft-wrapped lines, so keep code lines under 100 characters where possible.
 - The `fixCjkEmphasis` preprocess hook fixes strong emphasis next to full-width punctuation. It only inserts zero-width characters inside the delimiters; code blocks and maths are unchanged.
+- Implementation notes for maintainers: [docs/architecture.md](docs/architecture.md) (Chinese).
 
 ## License
 

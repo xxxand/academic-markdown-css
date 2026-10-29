@@ -43,9 +43,14 @@ npm run render:night -- path/to/your-file.md
 npm run render:mono -- path/to/your-file.md
 ```
 
-PDF 默认写在 Markdown 旁边；`md-to-pdf` 5.2.5 没有 `--dest`，需要输出到其他目录时用 Node API（参考 `scripts/build-night.js`）。
+PDF 默认写在 Markdown 旁边。批量渲染、指定输出目录或选择主题时用 `render:all`：
 
-如果文件不在项目目录内，把 `--basedir` 指向包含它的目录。KaTeX 字体已经内联，不会因 `--basedir` 丢公式字体；图片等相对资源仍要放在该目录下。
+```bash
+npm run render:all -- docs/ --outdir dist                      # 目录下所有 *.md
+npm run render:all -- a.md b.md --theme night --outdir dist    # light / night / mono
+```
+
+每个文件默认以自己所在目录作为 `basedir`，图片等相对资源放在 Markdown 旁边即可；要引用上级目录的资源时，用 `--basedir` 指向包含所有输入文件的共同目录。`render` / `render:night` / `render:mono` 是 `md-to-pdf` 原生命令，文件不在项目目录内时需要自己加 `--basedir <文件所在目录>`。KaTeX 字体已经内联，不受 `basedir` 影响。
 
 WSL/CI 的非登录 shell 里先加载 nvm：
 
@@ -147,6 +152,18 @@ table:nth-of-type(2) th:nth-child(3) { width: 48%; }
 - 链接保持下划线；Alerts 有类型标题，Diff 保留 `+` / `-`，不只看颜色
 - 运行 `npm run check:contrast` 检查夜间与黑白主题的关键色对
 
+## 验证
+
+```bash
+npm run verify -- dist/      # 检查 PDF：Type 3 字体、裸 **、空白页
+npm run build:all            # 重新生成三份示例 PDF
+npm run verify:examples      # 检查三份示例 PDF，并要求嵌入 KaTeX 字体
+npm test                     # 全部测试：需要 Chromium、字体和 poppler
+npm run test:unit            # 不需要浏览器的测试，CI 运行这一组
+```
+
+`verify` 依赖 poppler（`pdfinfo`、`pdffonts`、`pdftotext`）；任一项不通过时退出码为 1。空白页指版心内没有任何文字的页，只放一张无文字图片的页也会被报告。文档需要展示 `**` 本身（例如讲 Markdown 语法）时加 `--allow-asterisks`。
+
 ## 说明
 
 - Mermaid、KaTeX、Alerts 全部本地处理，不依赖 CDN。
@@ -154,6 +171,7 @@ table:nth-of-type(2) th:nth-child(3) { width: 48%; }
 - 短表尽量整表不拆页；超过约 40% 版心高度的表格、代码块和引用块允许跨页。
 - 代码块使用 `pre-wrap`；Chromium 对软折行不悬挂缩进，建议单行不超过 100 字符。
 - `fixCjkEmphasis` 预处理修正中文全角标点紧贴 `**` 的强调解析，只在标记内侧插入零宽字符，不改代码块和公式。
+- 维护与实现说明见 [docs/architecture.md](docs/architecture.md)。
 
 ## License
 
