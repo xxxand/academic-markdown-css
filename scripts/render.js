@@ -105,10 +105,11 @@ function planJobs(files, { outdir, basedir }) {
     }
   }
 
-  if (failed.length) {
-    console.error(`${failed.length} of ${jobs.length} files failed.`);
-    process.exitCode = 1;
-  }
+  if (failed.length) console.error(`${failed.length} of ${jobs.length} files failed.`);
+
+  // md-to-pdf leaves its static server (and possibly the browser) open when a
+  // conversion throws, which would keep the process alive after a failure.
+  process.exit(failed.length ? 1 : 0);
 })().catch((error) => {
   console.error(error);
   process.exit(1);
