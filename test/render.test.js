@@ -29,13 +29,25 @@ after(() => {
 });
 
 test("render.js writes one PDF per fixture", () => {
-  assert.deepEqual(fs.readdirSync(outdir).sort(), ["defects.pdf", "katex.pdf", "pagination.pdf"]);
+  assert.deepEqual(fs.readdirSync(outdir).sort(), ["defects.pdf", "katex.pdf", "mermaid.pdf", "pagination.pdf"]);
 });
 
 test("katex: formula fonts are embedded when the base directory has no node_modules", () => {
   const result = inspectPdf(path.join(outdir, "katex.pdf"), { expectKatex: true });
 
   assert.deepEqual(result.problems, []);
+});
+
+test("mermaid: diagrams are drawn into the PDF instead of leaving their source or an error", () => {
+  const text = pdfText("mermaid.pdf");
+
+  for (const label of ["读取输入", "生成 PDF", "报告错误", "提交文档", "返回结果"]) {
+    assert.ok(text.includes(label), `${label} is missing`);
+  }
+  for (const leaked of ["flowchart", "sequenceDiagram", "-->", "Mermaid 渲染失败"]) {
+    assert.ok(!text.includes(leaked), `${leaked} appears in the PDF text`);
+  }
+  assert.deepEqual(inspectPdf(path.join(outdir, "mermaid.pdf")).problems, []);
 });
 
 test("pagination: the document passes every check", () => {
