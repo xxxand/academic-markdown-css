@@ -150,12 +150,12 @@ table:nth-of-type(2) th:nth-child(3) { width: 48%; }
 
 - 正文对比度：浅色 14.81:1，夜间 15.23:1，黑白 18.88:1
 - 链接保持下划线；Alerts 有类型标题，Diff 保留 `+` / `-`，不只看颜色
-- 运行 `npm run check:contrast` 检查夜间与黑白主题的关键色对
+- 运行 `npm run check:contrast` 检查三套主题的关键色对
 
 ## 验证
 
 ```bash
-npm run verify -- dist/      # 检查 PDF：Type 3 字体、裸 **、空白页
+npm run verify -- dist/      # 检查 PDF：Type 3 字体、裸 **、Mermaid/KaTeX 渲染错误、空白页
 npm run build:all            # 重新生成三份示例 PDF
 npm run verify:examples      # 检查三份示例 PDF，并要求嵌入 KaTeX 字体
 npm test                     # 全部测试：需要 Chromium、字体和 poppler
@@ -168,7 +168,9 @@ npm run test:unit            # 不需要浏览器的测试，CI 运行这一组
 
 - Mermaid、KaTeX、Alerts 全部本地处理，不依赖 CDN。
 - 夜间适合屏幕；打印建议浅色或黑白。黑白适合单色打印、影印和弱化色彩干扰。
-- 短表尽量整表不拆页；超过约 40% 版心高度的表格、代码块和引用块允许跨页。
+- 短表尽量整表不拆页；超过约 40% 版心高度的表格、代码块、引用块、提示块、折叠块和图允许跨页。
+- 超出版心宽度的行间公式会等比缩小到版心内；没有断点的长行内代码在页边距处折行。
+- 图或公式渲染失败时 PDF 仍会生成，出错位置印有“Mermaid 渲染失败”或“KaTeX 渲染失败”；`verify` 会报告这些页。
 - 代码块使用 `pre-wrap`；Chromium 对软折行不悬挂缩进，建议单行不超过 100 字符。
 - `fixCjkEmphasis` 预处理修正中文全角标点紧贴 `**` 的强调解析，只在标记内侧插入零宽字符，不改代码块和公式。
 - 维护与实现说明见 [docs/architecture.md](docs/architecture.md)。

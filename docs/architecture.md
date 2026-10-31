@@ -29,7 +29,7 @@ Markdown
 | `academic-markdown.css` | 版式和浅色主题；颜色集中在 `:root` 变量里 |
 | `academic-markdown-night.css`、`academic-markdown-mono.css` | 颜色覆盖层，在基础样式之后加载，只改颜色 |
 | `scripts/render.js` | 批量渲染：`--outdir`、`--theme`、`--basedir` |
-| `scripts/verify.js` | PDF 验收：Type 3 字体、裸 `**`、空白页、KaTeX 字体 |
+| `scripts/verify.js` | PDF 验收：Type 3 字体、裸 `**`、Mermaid/KaTeX 渲染错误、空白页、KaTeX 字体 |
 | `scripts/build-night.js`、`scripts/build-mono.js` | 替换 `example.md` 里的配色说明和插图后渲染示例 |
 | `scripts/check-contrast.mjs` | 夜间和黑白色对的 WCAG 检查 |
 | `test/` | `markdown`、`verify`、`cli` 三个测试文件不需要浏览器，CI 只跑它们；`render.test.js` 用真实流水线渲染 `fixtures/` |
@@ -46,6 +46,9 @@ Markdown
 8. **`verify.js` 按版心裁剪。** 空白页检测用 `pdftotext -x -y -W -H` 裁到版心，页眉页脚在页边距内，不会算作内容；裁剪尺寸取自 `pdf_options.margin`，与排版共用同一份页边距。
 9. **KaTeX 固定在 0.18.10。** `marked-katex-extension` 的 peer 范围是 `>=0.16 <0.19`，所以不能用 0.19；0.18.11 被维护者标为弃用，0.18.10 是范围内最新的可用版本。Mermaid 12 依赖 `katex ^0.18`，与根依赖共用同一份。
 10. **Mermaid 固定 `look: "classic"`，并把 `flowchart.wrappingWidth` 提到 400。** Mermaid 12 默认的 neo 外观带投影，投影会被栅格化成位图写进 PDF；默认的 `wrappingWidth`（200）还会把 `Markdown 源文件` 这样的短中文标签折成孤字。两项都由 `test/render.test.js` 里的 Mermaid 用例守住。布局引擎保持 Mermaid 12 的默认值 ELK。
+11. **渲染错误要能被检出。** Mermaid 逐块渲染，一张图出错只替换它自己，并印出“Mermaid 渲染失败”；KaTeX 因 `throwOnError: false` 把无法解析的公式印成红色源码，运行时在其前面加上“KaTeX 渲染失败”。转换本身仍然成功，`verify.js` 靠这两句话找出问题页。
+12. **宽公式缩放，而不是滚动。** `.katex-display` 在屏幕上可横向滚动，打印时超出的部分直接被裁掉。运行时在打印版心宽度下量每个行间公式，过宽的用 `zoom` 等比缩到刚好放下。
+13. **主题文件里的行内代码规则要和基础层同级。** 基础层用 `h1 code … h4 code`、`table code` 去掉标题和表格里行内代码的底色；夜间和黑白的 `body code` 选择器优先级相同、加载更晚，所以两个主题文件里各有一份同样的覆盖规则。
 
 ## 扩展点
 

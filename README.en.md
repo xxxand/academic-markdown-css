@@ -150,12 +150,12 @@ See [example.md](example.md) for complete runnable examples.
 
 - Body-text contrast: light 14.81:1, night 15.23:1, monochrome 18.88:1
 - Links keep an underline; alerts have text labels, and diff blocks keep `+` / `-`, so information is not conveyed by colour alone
-- Run `npm run check:contrast` to check the key night and monochrome colour pairs
+- Run `npm run check:contrast` to check the key colour pairs of all three themes
 
 ## Verification
 
 ```bash
-npm run verify -- dist/      # check PDFs: Type 3 fonts, literal **, blank pages
+npm run verify -- dist/      # check PDFs: Type 3 fonts, literal **, Mermaid/KaTeX render errors, blank pages
 npm run build:all            # regenerate the three example PDFs
 npm run verify:examples      # check the example PDFs and require embedded KaTeX fonts
 npm test                     # all tests: needs Chromium, the fonts, and poppler
@@ -168,7 +168,9 @@ npm run test:unit            # tests that need no browser; this is what CI runs
 
 - Mermaid, KaTeX, and Alerts are processed locally; no CDN is required.
 - Night is intended for screen reading. Use light or monochrome for paper. Monochrome suits single-colour printing, photocopying, and contexts where colour would distract.
-- Short tables stay on one page where possible; tables, code blocks, and quotes taller than about 40% of the content area may span pages.
+- Short tables stay on one page where possible; tables, code blocks, quotes, alerts, details blocks, and figures taller than about 40% of the content area may span pages.
+- Display formulas wider than the content area are scaled down to fit it; long inline code without break points wraps at the page margin.
+- When a diagram or formula fails to render the PDF is still written, with "Mermaid 渲染失败" or "KaTeX 渲染失败" printed in its place; `verify` reports those pages.
 - Code blocks use `pre-wrap`; Chromium does not apply a hanging indent to soft-wrapped lines, so keep code lines under 100 characters where possible.
 - The `fixCjkEmphasis` preprocess hook fixes strong emphasis next to full-width punctuation. It only inserts zero-width characters inside the delimiters; code blocks and maths are unchanged.
 - Implementation notes for maintainers: [docs/architecture.md](docs/architecture.md) (Chinese).
