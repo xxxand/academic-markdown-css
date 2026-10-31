@@ -29,7 +29,7 @@ after(() => {
 });
 
 test("render.js writes one PDF per fixture", () => {
-  assert.deepEqual(fs.readdirSync(outdir).sort(), ["defects.pdf", "katex.pdf", "mermaid.pdf", "pagination.pdf"]);
+  assert.deepEqual(fs.readdirSync(outdir).sort(), ["alert.pdf", "defects.pdf", "errors.pdf", "katex.pdf", "mermaid.pdf", "overflow.pdf", "pagination.pdf"]);
 });
 
 test("katex: formula fonts are embedded when the base directory has no node_modules", () => {
@@ -102,4 +102,73 @@ test("defects: verify.js reports the blank page and the leaked asterisks", () =>
   const result = inspectPdf(path.join(outdir, "defects.pdf"));
 
   assert.deepEqual(result.problems, ["literal ** on page(s) 3", "blank page(s) 2"]);
+});
+
+test("alert: a tall alert starts after the preceding text instead of moving to the next page", () => {
+  const all = pages("alert.pdf");
+  const start = all.findIndex((page) => page.includes("ALERT_FIRST_LINE"));
+  const end = all.findIndex((page) => page.includes("提示第 30 行"));
+
+  assert.equal(start, 0, `the alert starts on page ${start + 1}`);
+  assert.ok(end > start, `the alert starts on page ${start + 1} and ends on page ${end + 1}`);
+  assert.deepEqual(inspectPdf(path.join(outdir, "alert.pdf")).problems, []);
+});
+
+test("errors: a failed diagram does not replace the working one, and verify.js reports it", () => {
+  const text = pdfText("errors.pdf");
+
+  assert.ok(text.includes("GOOD_NODE") || text.includes("正确的节点"), "the valid diagram is missing");
+  assert.ok(text.includes("Mermaid 渲染失败"), "the Mermaid error is not shown");
+  assert.ok(text.includes("KaTeX 渲染失败"), "the KaTeX error is not shown");
+  assert.deepEqual(inspectPdf(path.join(outdir, "errors.pdf")).problems, ["diagram or formula render error on page(s) 1"]);
+});
+
+// Words that end beyond the right margin are clipped by the page or the printer.
+const RIGHT_LIMIT_PT = (210 - 20) * (72 / 25.4) + 1;
+const wordsEnding = (name, pattern) => {
+  const html = execFileSync("pdftotext", ["-bbox", path.join(outdir, name), "-"], { encoding: "utf8" });
+  return [...html.matchAll(/<word [^>]*xMax="([\d.]+)"[^>]*>([^<]*)<\/word>/g)]
+    .filter(([, , word]) => pattern.test(word))
+    .map(([, xMax]) => Number(xMax));
+};
+
+test("overflow: a long inline code span wraps inside the right margin", () => {
+  const ends = wordsEnding("overflow.pdf", /ier_/);
+
+  assert.ok(ends.length >= 2, "the code span should wrap onto several lines");
+  assert.ok(Math.max(...ends) <= RIGHT_LIMIT_PT, `a line ends at ${Math.max(...ends)}pt`);
+});
+
+test("overflow: a wide display formula is scaled to fit the content width", () => {
+  const ends = wordsEnding("overflow.pdf", /ENDMARK|END/);
+
+  assert.ok(ends.length >= 1, "the end of the formula is missing from the PDF");
+  assert.ok(Math.max(...ends) <= RIGHT_LIMIT_PT, `the formula ends at ${Math.max(...ends)}pt`);
+});
+
+// Theme files only recolour; code in headings and tables stays unboxed in all of them.
+test("themes: inline code in headings and tables has no background", async () => {
+  const puppeteer = require("puppeteer");
+  const browser = await puppeteer.launch({ args: ["--no-sandbox"] });
+
+  try {
+    for (const suffix of ["", "-night", "-mono"]) {
+      const css = ["", ...(suffix ? [suffix] : [])].map((part) =>
+        fs.readFileSync(path.join(root, `academic-markdown${part}.css`), "utf8"),
+      );
+      const page = await browser.newPage();
+
+      await page.setContent(`<style>${css.join("\n")}</style><h2><code id="h">c</code></h2><table><tr><td><code id="t">c</code></td></tr></table><p><code id="p">c</code></p>`);
+      const colors = await page.evaluate(() =>
+        ["h", "t", "p"].map((id) => getComputedStyle(document.getElementById(id)).backgroundColor),
+      );
+
+      assert.equal(colors[0], "rgba(0, 0, 0, 0)", `heading code in theme "${suffix || "light"}"`);
+      assert.equal(colors[1], "rgba(0, 0, 0, 0)", `table code in theme "${suffix || "light"}"`);
+      assert.notEqual(colors[2], "rgba(0, 0, 0, 0)", `paragraph code in theme "${suffix || "light"}"`);
+      await page.close();
+    }
+  } finally {
+    await browser.close();
+  }
 });

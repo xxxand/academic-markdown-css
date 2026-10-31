@@ -286,6 +286,7 @@ body code {
   color: #232830;
   font-family: var(--font-mono);
   font-size: 0.86em;
+  overflow-wrap: break-word;
 }
 
 pre {
@@ -745,7 +746,9 @@ body pre .hljs-meta {
    pushing a whole page of whitespace. Table rows still stay intact. */
 pre.may-break,
 blockquote.may-break,
-details.may-break {
+details.may-break,
+figure.may-break,
+.alert.may-break {
   break-inside: auto;
   page-break-inside: auto;
   orphans: 3;

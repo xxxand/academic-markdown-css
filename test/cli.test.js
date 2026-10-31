@@ -70,3 +70,14 @@ test("render.js exits with an error when the browser cannot start", () => {
     fs.rmSync(directory, { recursive: true, force: true });
   }
 });
+
+test("the config rejects an unknown MD_THEME", () => {
+  const result = spawnSync(process.execPath, ["-e", 'require("./md-to-pdf.config.js")'], {
+    cwd: root,
+    encoding: "utf8",
+    env: { ...process.env, MD_THEME: "nigth" },
+  });
+
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /Unknown MD_THEME "nigth"/);
+});

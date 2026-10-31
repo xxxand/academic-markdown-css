@@ -116,6 +116,16 @@ body code {
   color: var(--night-text);
 }
 
+/* Keep inline code in headings and tables quiet, as in the base stylesheet. */
+h1 code,
+h2 code,
+h3 code,
+h4 code,
+table code {
+  background: transparent;
+  color: inherit;
+}
+
 pre {
   background: var(--night-surface-deep);
   border-color: var(--night-border);

@@ -17,6 +17,11 @@ const katexCss = fs.readFileSync(KATEX_CSS_PATH, "utf8").replace(/src:([^;}]+)(?
   return `src:url(data:font/woff2;base64,${fontData}) format("woff2")`;
 });
 
+// KaTeX prints what it cannot parse in this colour instead of throwing. It is
+// set apart from the default #cc0000 so that a deliberate \color{#cc0000} in
+// a document is not mistaken for an error.
+const KATEX_ERROR_COLOR = "#cc0001";
+
 const PAGE = {
   width: 210,
   height: 297,
@@ -33,7 +38,11 @@ const DIAGRAM_FONT =
 
 const MERMAID_BUNDLE = require.resolve("mermaid/dist/mermaid.min.js");
 
+const THEMES = ["light", "night", "mono"];
 const THEME = process.env.MD_THEME || "light";
+if (!THEMES.includes(THEME)) {
+  throw new Error(`Unknown MD_THEME "${THEME}"; use ${THEMES.join(", ")}.`);
+}
 const NIGHT = THEME === "night";
 const MONO = THEME === "mono";
 const PAGE_COLORS = NIGHT
@@ -308,43 +317,64 @@ ${this.parser.parse(token.tokens)}
 const pageRuntime = `
   await document.fonts.ready;
 
-  var blocks = document.querySelectorAll("pre.mermaid");
-  if (blocks.length) {
-    try {
-      if (!window.mermaid) throw new Error("Mermaid 脚本未加载");
-
-      window.mermaid.initialize({
-        startOnLoad: false,
-        securityLevel: "strict",
-        theme: "neutral",
-        look: "classic",
-        fontFamily: ${JSON.stringify(DIAGRAM_FONT)},
-        themeVariables: ${JSON.stringify(MERMAID_VARIABLES, null, 2)},
-        flowchart: {
-          htmlLabels: false,
-          wrappingWidth: 400,
-          useMaxWidth: true
-        },
-        sequence: {
-          useMaxWidth: true
-        }
-      });
-
-      await window.mermaid.run({ nodes: blocks });
-      await document.fonts.ready;
-    } catch (error) {
-      blocks.forEach(function (block) {
-        block.classList.add("mermaid-error");
-        block.textContent = "Mermaid 渲染失败：" + (error && error.message ? error.message : String(error));
-      });
-    }
+  function failBlock(block, error) {
+    block.classList.add("mermaid-error");
+    block.textContent = "Mermaid 渲染失败：" + (error && error.message ? error.message : String(error));
   }
+
+  var blocks = Array.from(document.querySelectorAll("pre.mermaid"));
+  if (blocks.length && !window.mermaid) {
+    blocks.forEach(function (block) {
+      failBlock(block, new Error("Mermaid 脚本未加载"));
+    });
+  } else if (blocks.length) {
+    window.mermaid.initialize({
+      startOnLoad: false,
+      securityLevel: "strict",
+      theme: "neutral",
+      look: "classic",
+      fontFamily: ${JSON.stringify(DIAGRAM_FONT)},
+      themeVariables: ${JSON.stringify(MERMAID_VARIABLES, null, 2)},
+      flowchart: {
+        htmlLabels: false,
+        wrappingWidth: 400,
+        useMaxWidth: true
+      },
+      sequence: {
+        useMaxWidth: true
+      }
+    });
+
+    for (var index = 0; index < blocks.length; index++) {
+      try {
+        await window.mermaid.run({ nodes: [blocks[index]] });
+      } catch (error) {
+        failBlock(blocks[index], error);
+      }
+    }
+    await document.fonts.ready;
+  }
+
+  var brokenFormulas = new Set(document.querySelectorAll(".katex-error"));
+  document.querySelectorAll('.katex-html [style*="${KATEX_ERROR_COLOR}"]').forEach(function (element) {
+    brokenFormulas.add(element.closest(".katex"));
+  });
+  brokenFormulas.forEach(function (formula) {
+    formula.insertAdjacentText("beforebegin", "KaTeX 渲染失败：");
+  });
 
   var previousWidth = document.body.style.width;
   document.body.style.width = ${JSON.stringify(`${CONTENT_WIDTH_MM}mm`)};
   var pageHeight = ${CONTENT_HEIGHT_PX};
 
-  document.querySelectorAll("pre:not(.mermaid), blockquote, table, details").forEach(function (element) {
+  document.querySelectorAll(".katex-display").forEach(function (display) {
+    var formula = display.firstElementChild;
+    if (formula && display.scrollWidth > display.clientWidth) {
+      formula.style.zoom = String(Math.floor((display.clientWidth / display.scrollWidth) * 1000) / 1000);
+    }
+  });
+
+  document.querySelectorAll("pre:not(.mermaid), blockquote, table, details, figure, .alert").forEach(function (element) {
     if (element.getBoundingClientRect().height > pageHeight * 0.4) {
       element.classList.add("may-break");
     }
@@ -370,6 +400,7 @@ module.exports = {
     markedKatex({
       nonStandard: true,
       throwOnError: false,
+      errorColor: KATEX_ERROR_COLOR,
       strict: "ignore",
     }),
     alertsExtension,

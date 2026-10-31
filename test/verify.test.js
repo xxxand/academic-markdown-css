@@ -1,7 +1,7 @@
 const assert = require("node:assert/strict");
 const { test } = require("node:test");
 
-const { parsePageInfo, parseFonts, findLiteralMarkers } = require("../scripts/verify.js");
+const { parsePageInfo, parseFonts, findLiteralMarkers, findRenderErrors } = require("../scripts/verify.js");
 
 const FONT_HEADER = `name                                 type              encoding         emb sub uni object ID
 ------------------------------------ ----------------- ---------------- --- --- --- ---------
@@ -33,4 +33,9 @@ Page size:       595.92 x 841.92 pts (A4)
 test("findLiteralMarkers reports the pages that contain **", () => {
   assert.deepEqual(findLiteralMarkers("clean\fprinted **bold**\fclean\f**\f"), [2, 4]);
   assert.deepEqual(findLiteralMarkers("clean\fclean\f"), []);
+});
+
+test("findRenderErrors reports the pages with a failed diagram or formula", () => {
+  assert.deepEqual(findRenderErrors("clean\fMermaid 渲染失败：Parse error\fclean\fKaTeX 渲染失败：\\bad\f"), [2, 4]);
+  assert.deepEqual(findRenderErrors("clean\fclean\f"), []);
 });
