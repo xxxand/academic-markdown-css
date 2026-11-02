@@ -53,6 +53,10 @@ h6 {
   color: var(--mono-text);
 }
 
+h6 {
+  color: var(--muted);
+}
+
 h1 {
   border-top-color: #000000;
   border-bottom-color: var(--mono-border-strong);

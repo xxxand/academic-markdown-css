@@ -142,9 +142,41 @@ test("overflow: a wide display formula is scaled to fit the content width", () =
   assert.ok(Math.max(...ends) <= RIGHT_LIMIT_PT, `the formula ends at ${Math.max(...ends)}pt`);
 });
 
+test("overflow: a long address, link and table cell wrap inside the right margin without losing text", () => {
+  for (const marker of ["TEXT_END", "LINK_END", "CELL_END"]) {
+    assert.ok(pdfText("long-url.pdf").includes(marker), `${marker} is missing`);
+  }
+  for (const pattern of [/ENDURL/, /segment29/, /CELL_END/]) {
+    const ends = wordsEnding("long-url.pdf", pattern);
+
+    assert.ok(ends.length >= 1, `${pattern} is missing from the PDF`);
+    assert.ok(Math.max(...ends) <= RIGHT_LIMIT_PT, `${pattern} ends at ${Math.max(...ends)}pt`);
+  }
+});
+
 test("figure-page: a page holding only a figure is not reported as blank", () => {
   assert.equal(pages("figure-page.pdf").length, 2);
   assert.deepEqual(inspectPdf(path.join(outdir, "figure-page.pdf")).problems, []);
+});
+
+test("themes: Markdown column alignment applies, and code is not justified", async () => {
+  const puppeteer = require("puppeteer");
+  const browser = await puppeteer.launch({ args: ["--no-sandbox"] });
+
+  try {
+    const css = fs.readFileSync(path.join(root, "academic-markdown.css"), "utf8");
+    const page = await browser.newPage();
+
+    await page.setContent(`<style>${css}</style><table><tr><th id="n">n</th><th id="c" align="center">c</th><td id="r" align="right">r</td></tr></table><pre id="p">p</pre>`);
+    const align = await page.evaluate(() =>
+      ["n", "c", "r", "p"].map((id) => getComputedStyle(document.getElementById(id)).textAlign),
+    );
+
+    // Chromium reports the presentational align attribute with a -webkit- prefix.
+    assert.deepEqual(align.map((value) => value.replace("-webkit-", "")), ["left", "center", "right", "left"]);
+  } finally {
+    await browser.close();
+  }
 });
 
 // Theme files only recolour; code in headings and tables stays unboxed in all of them.

@@ -58,6 +58,10 @@ h6 {
   color: var(--night-text);
 }
 
+h6 {
+  color: var(--muted);
+}
+
 h1 {
   border-top-color: var(--night-accent);
   border-bottom-color: var(--night-border-strong);

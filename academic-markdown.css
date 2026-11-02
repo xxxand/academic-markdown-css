@@ -43,6 +43,7 @@ body {
   font-size: 10.5pt;
   line-height: 1.8;
   text-align: justify;
+  overflow-wrap: anywhere;
   font-kerning: normal;
   font-variant-ligatures: common-ligatures;
 }
@@ -300,6 +301,7 @@ pre {
   font-family: var(--font-mono);
   font-size: 8.2pt;
   line-height: 1.62;
+  text-align: left;
   white-space: pre-wrap;
   overflow-wrap: break-word;
   word-break: normal;
@@ -436,6 +438,12 @@ table td {
   padding: 0.42em 0.62em;
   border: 0;
   vertical-align: top;
+}
+
+/* Cells left alone are not justified like the body; an align attribute from
+   the Markdown column markers must still win, so it is not overridden. */
+table th:not([align]),
+table td:not([align]) {
   text-align: left;
 }
 
@@ -687,8 +695,8 @@ pre.mermaid svg {
   overflow: visible;
 }
 
-/* Mermaid uses HTML labels inside foreignObject; reset the article paragraph
-   indent so node and edge labels stay centered in their shapes. */
+/* Reset the article paragraph indent in case a diagram label is rendered as
+   HTML, so labels stay centered in their shapes. */
 pre.mermaid p {
   margin: 0;
   text-align: center;
