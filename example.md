@@ -1,313 +1,157 @@
-# Academic Markdown 排版示例
+# 复杂语法如何被排版
 
-> 这是一份用于检查 `academic-markdown.css` 的样式测试文档。它覆盖标题层级、正文强调、列表、引用、表格、代码、Diff、图片、Alerts 提示块、LaTeX 数学、Mermaid 图表、折叠问答、定义列表和分页回归等常见排版元素。
->
-> 文档的正文和标题使用 Noto Serif / Sans SC，代码使用 Sarasa Mono SC；配色取自 University of Cambridge 官方色板。
+> 本文挑出中文 Markdown 里最容易出错的几类语法，逐一写出来，并说明项目怎么处理。配色取自 University of Cambridge 官方色板。
 
-**关键词**：Markdown · 学术排版 · md-to-pdf · Noto SC · Sarasa Mono · Mermaid · KaTeX
+## 1. 中文与标点
 
-<small>文档版本：2026-10 · 仅用于样式展示</small>
+### 1.1 强调紧贴全角标点
 
-## 1. 标题与正文
+按 CommonMark 的规则，全角标点不算强调的合法边界，所以 **中文（说明）**后文 这样的写法在多数渲染器里会把星号原样印出来。本项目用 `marked-cjk-friendly` 解析强调，下面这些都能正确加粗：概率 **68%**，对应 **95%**；定义 **`F_x`**（第 3 行）；他问 **“为什么？”** 然后离开；见 **《学术排版》** 一书。
 
-### 1.1 标题层级
+这一步只改解析规则，不往文本里插入任何不可见字符，所以从 PDF 里复制出来的文字是干净的。
 
-正文段落默认首行缩进两字、两端对齐，行距为 1.8。English text shares the same Noto Serif SC family, so Latin and CJK keep a consistent baseline. 数字与单位如 10.5 pt、A4、2026 年也能保持稳定。
+### 1.2 关闭标点禁则
 
-第二段测试 **粗体**、*斜体*、~~删除线~~、`inline code`、[外部链接](https://www.cam.ac.uk/)、<mark>高亮标记</mark>、<kbd>Ctrl</kbd> + <kbd>P</kbd>、H<sub>2</sub>O、E = mc<sup>2</sup> 和 <abbr title="Portable Document Format">PDF</abbr>。
+关闭标点不能出现在行首。下面的行内代码 `median()` ，句号前故意留了空格，渲染时页面脚本会删掉这个空格，并把标点和前一个字绑在一起。右括号 `R_x` ）也一样。
 
-嵌套格式示例：**不设置 `errno`** 时，程序可能无法判断失败原因。
+### 1.3 行内元素
 
-#### 1.1.1 四级标题
+<mark>高亮</mark>、<kbd>Ctrl</kbd> + <kbd>P</kbd>、H<sub>2</sub>O、E = mc<sup>2</sup>、<abbr title="Portable Document Format">PDF</abbr> 和 ~~删除线~~ 与正文共用同一条基线，中英文、数字和单位 (如 10.5 pt、A4) 之间保持一个空格。
 
-四级标题使用左侧短竖线标记，适合图题、代码文件名等次级结构。
+## 2. 数学公式
 
-##### 1.1.1.1 五级标题
+### 2.1 行内公式与美元符号
 
-五级标题用于更细的层级。
+行内公式使用标准规则：开头的 `$` 前要有空格，结尾的 `$` 后要有空格或 `，。：？！` 之一。设 $x_i \in \mathbb{R}^d$ 为样本，则 $E = mc^2$，其中 $\alpha^2 + \beta^2 = \gamma^2$。货币金额写成 \$5 和 \$10，反斜杠让它们保持文字，不会被当成公式。
 
-###### 1.1.1.1.1 六级标题
+### 2.2 多行公式与超宽公式
 
-六级标题保持同样的字体层级，但不再增加额外装饰。
+`aligned` 和 `cases` 环境都能用：
 
-### 1.2 引用块
+$$
+\begin{aligned}
+\operatorname{softmax}(z_i) &= \frac{\exp(z_i)}{\sum_{j=1}^{n}\exp(z_j)}, \\
+\operatorname{ReLU}(x) &= \begin{cases} x, & x > 0, \\ 0, & \text{其他情况。} \end{cases}
+\end{aligned}
+$$
 
-> 学术写作中的引用块适合放定义、提醒或需要强调的短段落。本样式使用浅灰底和深蓝左边线。
->
-> 第二段引用用来检查段落间距，`inline code` 在引用块中也应保持可读。
->
-> > 这是嵌套引用，用来检查多层引用时的缩进与边界。
+下面这一条比版心还宽。屏幕上它可以滚动，打印时多出的部分会被裁掉，所以页面脚本在打印宽度下量过之后，把它等比缩小到刚好放下：
 
-### 1.3 中文强调与标点
+$$
+x_{1}^2 + x_{2}^2 + x_{3}^2 + x_{4}^2 + x_{5}^2 + x_{6}^2 + x_{7}^2 + x_{8}^2 + x_{9}^2 + x_{10}^2 + x_{11}^2 + x_{12}^2 + x_{13}^2 + x_{14}^2 + x_{15}^2 + x_{16}^2 + x_{17}^2 + x_{18}^2 + x_{19}^2 + x_{20}^2 + x_{21}^2 + x_{22}^2 + x_{23}^2 + x_{24}^2 = r^2
+$$
 
-本段用于检查中文强调解析和标点禁则：1 Sigma 对应概率 **68%**，2 Sigma 对应 **95%**。定义 **`F_x`**（第 3 行）和 **atan2(y, x)**：反三角函数。
+写错的公式不会让转换失败，PDF 里会在原位印出红色的源码和错误提示，由 `npm run verify` 检出。
 
-标点清理示例：这是行内代码 `median()` ，句号前故意留了空格；另一个例子是 `R_x` ）：右括号前也有空格。渲染后这些空格应被清理，关闭标点不应出现在行首。
+## 3. 代码
 
-## 2. 列表
-
-- 第一层无序列表
-  - 第二层嵌套项
-  - 含 `inline code` 的嵌套项
-- 另一个第一层项目
-
-1. 有序列表第一项
-2. 第二项
-   1. 嵌套有序项
-   2. 另一个嵌套项
-3. 第三项
-
-- [x] 已完成：样式表
-- [ ] 待办：补充更多示例
-- [ ] 待办：检查打印分页
-
-## 3. 表格
-
-| 对齐方式 | 示例 | 说明 |
-|:---|:---:|---:|
-| 左对齐 | `text` | 默认列 |
-| 居中 | **bold** | 居中列 |
-| 右对齐 | 12.34 | 数值列 |
-| 代码 | `median()` | 行内代码 |
-| 链接 | [Cambridge][cam] | 外部链接 |
-
-## 4. 代码
-
-行内代码如 `标准化(数值列表)` 使用等宽字体和浅灰底。下面分别测试 Python、Bash、JSON 和纯文本代码块。
+### 3.1 高亮与中文标识符
 
 ```python
-import math
-
 def standardize(数值列表):
     """按训练集统计量做标准化。"""
     均值 = sum(数值列表) / len(数值列表)
-    方差 = sum((x - 均值) * (x - 均值) for x in 数值列表) / len(数值列表)
-    return [(x - 均值) / math.sqrt(方差) for x in 数值列表]
+    return [x - 均值 for x in 数值列表]
 ```
 
-```bash
-# 安装依赖
-npm install
+### 3.2 Diff
 
-# 渲染示例文档
-md-to-pdf example.md --config-file md-to-pdf.config.js
-```
-
-```json
-{
-  "标题": "学术 Markdown 示例",
-  "配色": "Cambridge Slate",
-  "字体": ["Noto Serif SC", "Sarasa Mono SC"]
-}
-```
-
-```text
-Markdown（中文）→ HTML → PDF
-       └─ 学术排版样式
-```
-
-Diff 代码块用 `diff` 语言标记，新增行和删除行会分别着色，未标记的上下文行保持普通代码色：
+`diff` 代码块按符号给新增行和删除行着色，符号本身保留，黑白打印时也能分辨：
 
 ```diff
   def standardize(数值列表):
 -     旧实现：按列均值填充缺失值
 +     新实现：按训练集统计量标准化
-+     同时保留原始索引
       return 数值列表
 ```
 
-## 5. 图片与图注
+### 3.3 超长的行
+
+代码块使用 `pre-wrap`，超过版心的行在页边距处折行，不会伸到页外，折行处的空格也不会被两端对齐拉开：
+
+```bash
+curl --silent --show-error --location --retry 3 --output report.pdf "https://example.com/reports/2026/10/academic-markdown-sample-report.pdf"
+```
+
+## 4. 嵌套结构
+
+### 4.1 列表、任务和引用
+
+1. 有序列表第一项
+2. 第二项
+   - 嵌套的无序项，含 `inline code`
+   - 再嵌一层
+     1. 第三层有序项
+3. 第三项
+
+- [x] 已完成：基础样式
+- [ ] 待办：补充更多示例
+
+> 引用块可以包含多个段落。
+>
+> > 嵌套的引用保持缩进，背景不会溢出边框。
+
+### 4.2 提示块里的嵌套内容
+
+提示块用 `> [!TYPE]` 声明，类型共有 NOTE、TIP、IMPORTANT、WARNING、CAUTION 五种。块里可以放列表、代码和公式：
+
+> [!NOTE]
+> 说明块适合补充背景，它里面可以继续写：
+>
+> - 带 `inline code` 的列表项
+> - 带公式的列表项，如 $\bar{x} = \frac{1}{n}\sum_i x_i$。
+>
+> ```python
+> print("提示块里的代码块同样高亮")
+> ```
+
+> [!WARNING]
+> 警告块配有独立的色条和标题，颜色之外还有文字标签，黑白打印时同样能分辨。
+
+## 5. 表格
+
+三线表按表头声明的方向对齐，单元格里可以放行内代码、公式、链接和脚注引用[^table]：
+
+| 方法 | 复杂度 | 说明 |
+|:---|:---:|---:|
+| 快速排序 | $O(n \log n)$ | 平均情况 |
+| 冒泡排序 | $O(n^2)$ | 仅用于教学 |
+| `sorted()` | $O(n \log n)$ | 见 [Python 文档](https://docs.python.org/3/howto/sorting.html) |
+
+短表尽量不拆页；超过约 40% 版心高度的表格才允许跨页，续页会重复表头，每一行始终保持完整。
+
+## 6. 图
+
+### 6.1 Mermaid
+
+Mermaid 在 Chromium 里渲染成矢量图再写入 PDF，节点里可以混排中文和 English；某一张图出错时，只有它自己会被替换成错误提示：
+
+```mermaid
+flowchart LR
+    A[Markdown 源文件] --> B{含公式或图表?}
+    B -- 是 --> C[KaTeX / Mermaid 渲染]
+    B -- 否 --> D[普通 HTML]
+    C --> E[生成 A4 PDF]
+    D --> E
+```
+
+### 6.2 带图注的插图
 
 <figure>
   <img src="assets/example-figure.svg" alt="Markdown 经由 md-to-pdf 渲染为 PDF 的流程图">
   <figcaption>图 1. 从 Markdown 到 A4 PDF 的渲染流程。示意图使用 Cambridge 色板。</figcaption>
 </figure>
 
-## 6. Alerts 提示块
+## 7. 脚注与折叠块
 
-GitHub 风格 Alerts 使用 `> [!TYPE]` 语法，支持段落、列表和行内代码。
-
-> [!NOTE]
-> 说明块用于补充背景信息，不打断正文的论证节奏。
->
-> 它也可以包含列表：
->
-> - 第一项
-> - 第二项
-
-> [!TIP]
-> 小技巧：用 `npm run render -- file.md` 渲染其他文档。
-
-> [!IMPORTANT]
-> 重要信息应当简短，避免整段都使用强调色。
-
-> [!WARNING]
-> 警告块适合提示可能导致数据错误或构建失败的操作。
-
-> [!CAUTION]
-> 小心块用于高风险操作；本示例只展示样式。
-
-## 7. LaTeX 数学
-
-行内公式如 $E = mc^2$ 与 $x_i \in \mathbb{R}^d$，以及 $\alpha^2 + \beta^2 = \gamma^2$。
-
-行间公式使用 `$$`：
-
-$$
-\begin{aligned}
-\operatorname{softmax}(z_i) &= \frac{\exp(z_i)}{\sum_{j=1}^{n}\exp(z_j)}, \\
-\mathbf{X} &\in \mathbb{R}^{n \times d}.
-\end{aligned}
-$$
-
-矩阵与集合也可以直接排版：
-
-$$
-\mathbf{y} \in \{0,1\}^n, \qquad
-\hat{\mathbf{y}} = \operatorname{argmax}(\mathbf{X}\mathbf{w} + b).
-$$
-
-## 8. Mermaid 图表
-
-Mermaid 流程图在 Chromium 内渲染为 SVG，再写入 PDF；图中可以混排中文和 English。
-
-```mermaid
-flowchart LR
-    A[Markdown 源文件] --> B{包含 Mermaid?}
-    B -- 是 --> C[渲染为 SVG]
-    B -- 否 --> D[普通 HTML]
-    C --> E[生成 A4 PDF]
-    D --> E
-```
-
-## 9. 折叠问答
+脚注由 `[^标签]` 引用，说明写在别处，统一印在文末[^end]。
 
 <details>
-<summary>为什么正文使用衬线字体？</summary>
+<summary>折叠块在打印时为什么自动展开？</summary>
 
-衬线字体在长文中提供更稳定的阅读节奏；标题使用无衬线字体，形成清晰层级。
+纸面上没有点击操作，折叠的内容会丢失，所以 `<details>` 在渲染前一律展开。
 
 </details>
 
-<details>
-<summary>如何修改强调色 `--accent`？</summary>
-
-在 `academic-markdown.css` 顶部的 `:root` 中修改自定义属性即可。
-
-</details>
-
-## 10. 定义列表
-
-<dl>
-  <dt>三线表</dt>
-  <dd>只有顶线、表头线和底线的表格，常见于学术出版。</dd>
-  <dt>留白</dt>
-  <dd>页面中未被文字或图形占用的空间，用来建立呼吸感和层级。</dd>
-</dl>
-
-## 11. 分页与回归检查
-
-### 11.1 长表格
-
-下表同时用于检查三线表跨页、表头重复和短表/长表的分页策略。表格会在版心内按行拆分，表头在下一页重复；每一行仍然保持完整。
-
-| 检查项 | 示例位置 | 期望结果 | 验证方式 |
-|---|---|---|---|
-| 字体嵌入 | 全文 | 不出现 Type 3 字体，正文和页眉都使用 CID TrueType | `pdffonts example.pdf` |
-| KaTeX 字体 | 第 7 节 | 公式字体正常嵌入，不依赖 basedir | `pdffonts` 中能看到 KaTeX 字体 |
-| 中文强调 | 1.3 | 68%、F_x 显示为粗体，不泄漏星号 | `pdftotext` 不含裸星号 |
-| 标点禁则 | 1.3 | 关闭标点不在行首，空格清理后紧贴前文 | 抽查行首和复制文本 |
-| 短表 | 第 3 节 | 少于 9 行且不高的表格保持整表 | 翻页检查表格完整性 |
-| 长表 | 本节 | 超过约 40% 版心高度的表格允许跨页 | 检查表头是否在下一页重复 |
-| 长代码块 | 11.2 | 超过阈值的代码块允许跨页，不把整页推走 | 检查跨页处是否保留完整行 |
-| 代码行宽 | 11.2 | 90 字符以内的代码行不折行 | 检查长行是否从第 1 列续行 |
-| Mermaid | 第 8 节 | 流程图渲染为 SVG，文字不溢出节点 | 目视检查节点文字 |
-| Alerts | 第 6 节 | 五种提示块保留标题和左侧色条 | 目视检查五种提示块 |
-| 页眉页脚 | 每一页 | 页眉显示标题和标签，页脚显示页码 | 检查奇数页和偶数页 |
-| 夜间主题 | example-night.pdf | 版式不变，仅切换配色 | 打开夜间示例 PDF |
-| 对比度 | `npm run check:contrast` | 所有关键色对通过 WCAG 2.2 AA | 运行 npm 脚本 |
-| 文档结构 | 全文 | 标题层级、书签、列表和表格完整 | 查看 PDF 书签和目录 |
-| 代码高亮 | 第 4 节 | `hljs-*` 类名与关键字/字符串颜色保留 | 目视检查 Python/Bash/JSON |
-| Diff 代码块 | 第 4 节 | 新增/删除行保留符号和底色 | 目视检查 `+` / `-` 行 |
-| 任务列表 | 第 2 节 | 复选框与文字对齐 | 目视检查列表 |
-| 折叠问答 | 第 9 节 | `<details>` 自动展开且完整 | 检查问答块内容 |
-| 书签 | 全文 | 标题层级生成 PDF 书签 | 查看 PDF 书签面板 |
-| 表格列宽 | 第 3 节 | 自动列宽可读，不出现溢出 | 目视检查表格边界 |
-| 标题层级 | 1.1 | h1–h6 字号、边线和间距一致 | 目视检查六个层级 |
-| 嵌套引用 | 1.2 | 多层引用缩进正确，背景不溢出 | 目视检查嵌套边界 |
-| 图片与图注 | 第 5 节 | 图片居中，图注与图片同页 | 检查图片和图注 |
-| 定义列表 | 第 10 节 | 术语加粗、释义缩进对齐 | 目视检查 dl/dt/dd |
-| 表格对齐 | 第 3 节 | 左/中/右对齐列按表头生效 | 目视检查三列对齐 |
-| 代码语言 | 第 4 节 | Python/Bash/JSON/纯文本均可高亮 | 目视检查四种代码块 |
-| 夜间对比度 | 夜间示例 | 正文、链接和代码颜色均清晰 | 运行 check:contrast |
-
-### 11.2 长代码块与行宽
-
-下面的代码块故意超过一页，用来检查 `pre` 的跨页行为；代码行本身保持在 100 字符以内。
-
-```python
-# 分页回归测试：这个代码块故意超过一页。
-# 预期：代码块可以在任意两行之间断开，续页不丢失内容。
-
-def plan_pagination(blocks, page_height, threshold=0.4):
-    """把块分成 keep 和 may-break 两类。"""
-    page = page_height
-    high = page * threshold
-    result = []
-
-    for block in blocks:
-        height = measure(block)
-        if height > high:
-            result.append(("may-break", block, height))
-        else:
-            result.append(("keep", block, height))
-
-    return result
-
-
-def measure(block):
-    """示意：真实实现读取 getBoundingClientRect。"""
-    return block["height"]
-
-
-def render(plan):
-    for action, block, height in plan:
-        if action == "may-break":
-            block["break_inside"] = "auto"
-            block["orphans"] = 3
-            block["widows"] = 3
-        else:
-            block["break_inside"] = "avoid"
-        print(action, height, block["name"])
-
-
-blocks = [
-    {"name": "short-table", "height": 180},
-    {"name": "tall-table", "height": 620},
-    {"name": "long-code", "height": 760},
-    {"name": "quote", "height": 240},
-]
-
-expected_pages = [
-    "short-table stays on one page",
-    "tall-table repeats its header",
-    "long-code continues without a half-empty page",
-    "quote can break when it is taller than the threshold",
-]
-
-for page_plan in expected_pages:
-    print(page_plan)
-
-# 下面这一行是 90 字符，用于检查代码行宽；在当前字号下不应折行。
-print("the quick brown fox jumps over the lazy dog 0123456789 abcdefghijklmnopqrstuvwxyz")
-```
-
-> 分页的目标不是“每一页都塞满”，而是避免因为一个过高的块把整页推走；表格行、代码行和引用段落仍然保持可读的完整性。
-
-> 好的学术排版不喧宾夺主：它让读者把注意力放在论证、数据和文字本身。
-
----
-
-*示例文档结束。*
-
-[cam]: https://www.cam.ac.uk/brand-resources/guidelines/colour
+[^table]: 脚注引用也可以出现在表格、提示块和列表里。
+[^end]: Chromium 不支持把脚注排到每页底部，所以全部集中在文档末尾。

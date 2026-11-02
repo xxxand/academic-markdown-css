@@ -19,7 +19,7 @@ Chinese-first A4 academic PDF themes · light / night / monochrome
 | Themes | Light / night / monochrome, all checked against WCAG 2.2 AA |
 | Output | CID TrueType font embedding, inlined KaTeX fonts, height-based pagination for tall tables and code blocks |
 
-Section 11 of `example.md` is a page-by-page regression checklist covering font embedding, pagination, CJK emphasis, punctuation, and code line width.
+`example.md` is five pages long. Each section picks a kind of syntax that is easy to get wrong (CJK emphasis and punctuation rules, maths, code wrapping, nested structures, tables, diagrams, footnotes), shows it, and explains how the project handles it. Pagination and font-embedding regressions are covered by the fixtures under `test/`.
 
 ## Quick Start
 

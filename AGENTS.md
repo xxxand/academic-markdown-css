@@ -9,7 +9,7 @@ Chinese-first A4 PDF themes for `md-to-pdf` (CommonJS, Node >= 22.12, npm). No b
 - Single test file: `node --test test/markdown.test.js`.
 - Render with outputs elsewhere: `npm run render:all -- --theme night --outdir dist file.md` (`scripts/render.js`). The native `npm run render*` commands (raw `md-to-pdf`) can only write next to the source and need `--basedir` for files outside the repo.
 - Rebuild the committed examples with `npm run build:all`, then `npm run verify:examples`. `example.pdf`, `example-night.pdf`, and `example-mono.pdf` are tracked; other `*.pdf` and `example.html` are gitignored.
-- `build:night` and `build:mono` do string replacement on `example.md`. If you edit the strings they match (color description, figure path, `"配色": "Cambridge Slate"`), update the scripts too.
+- `build:night` and `build:mono` do string replacement on `example.md`. If you edit the strings they match (the colour sentence in the opening quote, the figure path, the figure caption), update the scripts too.
 
 ## Architecture
 

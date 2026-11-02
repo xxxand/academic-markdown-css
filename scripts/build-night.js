@@ -16,7 +16,6 @@ const markdown = replaceExact(fs.readFileSync(source, "utf8"), [
     "配色取自 University of Cambridge 官方色板。",
     "配色采用夜间模式：深蓝黑底、浅蓝强调与高对比度文字，保持 Cambridge 色系的冷静气质。",
   ],
-  ['"配色": "Cambridge Slate"', '"配色": "Cambridge Slate Night"'],
   ["示意图使用 Cambridge 色板。", "示意图使用夜间模式配色。"],
 ]);
 

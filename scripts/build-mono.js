@@ -13,7 +13,6 @@ const output = path.join(root, "example-mono.pdf");
 const markdown = replaceExact(fs.readFileSync(source, "utf8"), [
   ["assets/example-figure.svg", "assets/example-figure-mono.svg"],
   ["配色取自 University of Cambridge 官方色板。", "配色采用黑白主题：纯白底、黑灰文字与中性灰层级。"],
-  ['"配色": "Cambridge Slate"', '"配色": "Monochrome"'],
   ["示意图使用 Cambridge 色板。", "示意图使用黑白灰配色。"],
 ]);
 
