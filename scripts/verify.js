@@ -161,7 +161,11 @@ function collectPdfs(inputs) {
     if (!fs.existsSync(resolved)) fail(`No such file or directory: ${input}`);
 
     if (fs.statSync(resolved).isDirectory()) {
-      const names = fs.readdirSync(resolved).filter((name) => name.endsWith(".pdf")).sort();
+      const names = fs
+        .readdirSync(resolved, { withFileTypes: true })
+        .filter((entry) => entry.isFile() && /\.pdf$/i.test(entry.name))
+        .map((entry) => entry.name)
+        .sort();
       files.push(...names.map((name) => path.join(resolved, name)));
     } else {
       files.push(resolved);

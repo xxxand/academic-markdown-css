@@ -24,7 +24,6 @@ const markdown = replaceExact(fs.readFileSync(source, "utf8"), [
   );
 
   if (!pdf) throw new Error("Monochrome PDF was not generated.");
-  fs.writeFileSync(output, pdf.content);
   console.log(`wrote ${path.relative(root, output)}`);
 })().catch((error) => {
   console.error(error);

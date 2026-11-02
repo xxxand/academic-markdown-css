@@ -30,7 +30,11 @@ function collectFiles(inputs) {
     if (!fs.existsSync(resolved)) fail(`No such file or directory: ${input}`);
 
     if (fs.statSync(resolved).isDirectory()) {
-      const names = fs.readdirSync(resolved).filter((name) => name.endsWith(".md")).sort();
+      const names = fs
+        .readdirSync(resolved, { withFileTypes: true })
+        .filter((entry) => entry.isFile() && /\.md$/i.test(entry.name))
+        .map((entry) => entry.name)
+        .sort();
       files.push(...names.map((name) => path.join(resolved, name)));
     } else {
       files.push(resolved);
@@ -90,6 +94,7 @@ function planJobs(files, { outdir, basedir }) {
   // The config reads MD_THEME when it is loaded, so set it first.
   process.env.MD_THEME = values.theme;
   const { mdToPdf } = require("md-to-pdf");
+  const { marked, getDefaults } = require("marked");
   const config = require("../md-to-pdf.config.js");
 
   if (values.outdir) fs.mkdirSync(path.resolve(values.outdir), { recursive: true });
@@ -97,6 +102,9 @@ function planJobs(files, { outdir, basedir }) {
   const failed = [];
   for (const { file, dest, basedir } of jobs) {
     try {
+      // md-to-pdf registers the extensions on the global marked on every call;
+      // start each file from a clean instance so they are not stacked.
+      marked.setOptions(getDefaults());
       await mdToPdf({ path: file }, { ...config, basedir, dest });
       console.log(`wrote ${isInside(process.cwd(), dest) ? path.relative(process.cwd(), dest) : dest}`);
     } catch (error) {
