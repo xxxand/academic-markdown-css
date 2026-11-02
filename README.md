@@ -162,7 +162,7 @@ npm test                     # 全部测试：需要 Chromium、字体和 popple
 npm run test:unit            # 不需要浏览器的测试，CI 运行这一组
 ```
 
-`verify` 依赖 poppler（`pdfinfo`、`pdffonts`、`pdftotext`）；任一项不通过时退出码为 1。空白页指版心内没有任何文字的页，只放一张无文字图片的页也会被报告。文档需要展示 `**` 本身（例如讲 Markdown 语法）时加 `--allow-asterisks`。
+`verify` 依赖 poppler（`pdfinfo`、`pdffonts`、`pdftotext`、`pdftoppm`）；任一项不通过时退出码为 1。空白页指版心内既没有文字、也没有任何图形的页，只放一张插图的页不算空白。文档需要展示 `**` 本身（例如讲 Markdown 语法）时加 `--allow-asterisks`。
 
 ## 说明
 

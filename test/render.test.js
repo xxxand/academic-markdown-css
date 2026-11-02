@@ -142,6 +142,11 @@ test("overflow: a wide display formula is scaled to fit the content width", () =
   assert.ok(Math.max(...ends) <= RIGHT_LIMIT_PT, `the formula ends at ${Math.max(...ends)}pt`);
 });
 
+test("figure-page: a page holding only a figure is not reported as blank", () => {
+  assert.equal(pages("figure-page.pdf").length, 2);
+  assert.deepEqual(inspectPdf(path.join(outdir, "figure-page.pdf")).problems, []);
+});
+
 // Theme files only recolour; code in headings and tables stays unboxed in all of them.
 test("themes: inline code in headings and tables has no background", async () => {
   const puppeteer = require("puppeteer");

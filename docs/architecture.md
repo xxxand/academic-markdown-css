@@ -43,7 +43,7 @@ Markdown
 5. **按高度分页，并在打印版心宽度下测量。** `blockquote`、`pre`、`details`、`figure`、`.alert` 和不足 9 行的表格默认不跨页，表格行始终保持完整；高度超过版心 40% 的块加 `may-break`，允许在行间断开，否则会把整页推成空白。屏幕宽度和打印版心不同，量高度前先把 `body` 临时设为版心宽（170 mm）。表头用 `table-header-group` 在续页重复。
 6. **`page_media_type: "print"`。** `md-to-pdf` 默认以 screen 媒体生成 PDF，`@media print` 规则不会生效，这里统一用 print。
 7. **主题 = 基础层 + 颜色层。** 版式、字体和分页不随主题变化。页眉页脚模板是独立文档，Mermaid 用 `themeVariables`，两者读不到页面的 CSS 变量，所以它们的颜色在 `md-to-pdf.config.js` 里按主题另写一份。
-8. **`verify.js` 按版心裁剪。** 空白页检测用 `pdftotext -x -y -W -H` 裁到版心，页眉页脚在页边距内，不会算作内容；裁剪尺寸取自 `pdf_options.margin`，与排版共用同一份页边距。
+8. **`verify.js` 按版心裁剪。** 空白页检测先用 `pdftotext -x -y -W -H` 裁到版心看文字；没有文字的页再用 `pdftoppm` 渲染同一块区域，所有像素相同才算空白，所以只放插图的页不会误报。页眉页脚在页边距内，不会算作内容；裁剪尺寸取自 `pdf_options.margin`，与排版共用同一份页边距。
 9. **KaTeX 固定在 0.18.10。** `marked-katex-extension` 的 peer 范围是 `>=0.16 <0.19`，所以不能用 0.19；0.18.11 被维护者标为弃用，0.18.10 是范围内最新的可用版本。Mermaid 12 依赖 `katex ^0.18`，与根依赖共用同一份。
 10. **Mermaid 固定 `look: "classic"`，并把 `flowchart.wrappingWidth` 提到 400。** Mermaid 12 默认的 neo 外观带投影，投影会被栅格化成位图写进 PDF；默认的 `wrappingWidth`（200）还会把 `Markdown 源文件` 这样的短中文标签折成孤字。两项都由 `test/render.test.js` 里的 Mermaid 用例守住。布局引擎保持 Mermaid 12 的默认值 ELK。
 11. **渲染错误要能被检出。** Mermaid 逐块渲染，一张图出错只替换它自己，并印出“Mermaid 渲染失败”；KaTeX 因 `throwOnError: false` 把无法解析的公式印成红色源码，运行时在其前面加上“KaTeX 渲染失败”。转换本身仍然成功，`verify.js` 靠这两句话找出问题页。
@@ -69,6 +69,6 @@ Markdown
 - `basedir` 是静态服务的根目录：输入文件必须在其中，相对路径的图片也只能放在其下。
 - 代码块使用 `pre-wrap`，Chromium 不对软折行的续行做悬挂缩进，建议单行不超过 100 字符。
 - `PAGE_COLORS`、`MERMAID_VARIABLES` 与 CSS 变量里的颜色各存一份，没有单一来源。改主题色时要同步修改，并重跑 `npm run check:contrast`。
-- `verify.js` 的空白页检测只看文字；裸 `**` 检测会把代码示例里的 `**` 也算进去，此时用 `--allow-asterisks`。
+- 裸 `**` 检测会把代码示例里的 `**` 也算进去，此时用 `--allow-asterisks`。
 - `mermaid.min.js` 是自包含的打包文件，Mermaid 自己用的 KaTeX 编译在里面（12.2.0 内嵌 0.18.11），不受 `package.json` 里 `katex` 版本控制；要更新它只能升级 Mermaid。
 - `md-to-pdf` 在转换抛错时不会关闭它的静态服务，所以 `render.js` 结束时显式 `process.exit`，否则失败后进程不会退出。

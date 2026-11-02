@@ -1,5 +1,6 @@
 const { execFileSync } = require("child_process");
 const fs = require("fs");
+const os = require("os");
 const path = require("path");
 const { parseArgs } = require("util");
 
@@ -11,7 +12,7 @@ const USAGE = `Usage: node scripts/verify.js [options] <file.pdf|directory>...
 
 Checks that each PDF is safe to print: no Type 3 fonts, no literal "**" left
 over from Markdown emphasis, no Mermaid or KaTeX render errors, and no blank pages. A directory stands for the
-*.pdf files directly inside it. Requires poppler (pdfinfo, pdffonts, pdftotext).
+*.pdf files directly inside it. Requires poppler (pdfinfo, pdffonts, pdftotext, pdftoppm).
 
 Options:
   --expect-katex     also require at least one embedded KaTeX font
@@ -69,8 +70,36 @@ function findRenderErrors(text) {
   return text.split("\f").flatMap((page, index) => (/(Mermaid|KaTeX) 渲染失败/.test(page) ? [index + 1] : []));
 }
 
-// A page is blank when no text sits inside the margins; the running header and
-// footer live in the margins, so cropping to the content box excludes them.
+// A binary PGM whose pixels are all one value has nothing drawn on it.
+function isUniformPgm(data) {
+  const header = data.toString("latin1", 0, 32).match(/^P5\s+\d+\s+\d+\s+255\s/);
+  if (!header) throw new Error("unexpected pdftoppm output");
+
+  const start = header[0].length;
+  for (let index = start + 1; index < data.length; index++) {
+    if (data[index] !== data[start]) return false;
+  }
+  return true;
+}
+
+function isUniformPage(file, page, crop) {
+  const directory = fs.mkdtempSync(path.join(os.tmpdir(), "verify-"));
+
+  try {
+    const root = path.join(directory, "page");
+    const range = String(page);
+    const [x, y, w, h] = crop;
+    poppler("pdftoppm", ["-f", range, "-l", range, "-r", "72", "-gray", "-singlefile", "-x", x, "-y", y, "-W", w, "-H", h, file, root]);
+    return isUniformPgm(fs.readFileSync(`${root}.pgm`));
+  } finally {
+    fs.rmSync(directory, { recursive: true, force: true });
+  }
+}
+
+// A page is blank when nothing is drawn inside the margins; the running header
+// and footer live in the margins, so cropping to the content box excludes them.
+// Text is checked first because it is cheap; a page without text is rendered,
+// so that a page holding only a figure still counts as content.
 function findBlankPages(file, { pages, width, height }) {
   const { margin } = config.pdf_options;
   const [top, right, bottom, left] = [margin.top, margin.right, margin.bottom, margin.left].map(
@@ -84,7 +113,7 @@ function findBlankPages(file, { pages, width, height }) {
   for (let page = 1; page <= pages; page++) {
     const range = String(page);
     const text = poppler("pdftotext", ["-f", range, "-l", range, "-x", x, "-y", y, "-W", w, "-H", h, file, "-"]);
-    if (!text.trim()) blank.push(page);
+    if (!text.trim() && isUniformPage(file, page, [x, y, w, h])) blank.push(page);
   }
 
   return blank;
@@ -180,4 +209,4 @@ function main() {
 
 if (require.main === module) main();
 
-module.exports = { parsePageInfo, parseFonts, findLiteralMarkers, findRenderErrors, inspectPdf };
+module.exports = { parsePageInfo, parseFonts, findLiteralMarkers, findRenderErrors, isUniformPgm, inspectPdf };

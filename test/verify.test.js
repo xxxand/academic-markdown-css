@@ -1,7 +1,7 @@
 const assert = require("node:assert/strict");
 const { test } = require("node:test");
 
-const { parsePageInfo, parseFonts, findLiteralMarkers, findRenderErrors } = require("../scripts/verify.js");
+const { parsePageInfo, parseFonts, findLiteralMarkers, findRenderErrors, isUniformPgm } = require("../scripts/verify.js");
 
 const FONT_HEADER = `name                                 type              encoding         emb sub uni object ID
 ------------------------------------ ----------------- ---------------- --- --- --- ---------
@@ -34,4 +34,13 @@ test("findLiteralMarkers reports the pages that contain **", () => {
 test("findRenderErrors reports the pages with a failed diagram or formula", () => {
   assert.deepEqual(findRenderErrors("clean\fMermaid 渲染失败：Parse error\fclean\fKaTeX 渲染失败：\\bad\f"), [2, 4]);
   assert.deepEqual(findRenderErrors("clean\fclean\f"), []);
+});
+
+test("isUniformPgm tells an empty crop from one with marks", () => {
+  const pgm = (...pixels) => Buffer.concat([Buffer.from("P5\n2 2\n255\n", "latin1"), Buffer.from(pixels)]);
+
+  assert.equal(isUniformPgm(pgm(255, 255, 255, 255)), true);
+  assert.equal(isUniformPgm(pgm(11, 27, 35, 35)), false);
+  assert.equal(isUniformPgm(pgm(10, 10, 10, 10)), true);
+  assert.throws(() => isUniformPgm(Buffer.from("not a pgm")), /unexpected pdftoppm output/);
 });

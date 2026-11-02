@@ -162,7 +162,7 @@ npm test                     # all tests: needs Chromium, the fonts, and poppler
 npm run test:unit            # tests that need no browser; this is what CI runs
 ```
 
-`verify` needs poppler (`pdfinfo`, `pdffonts`, `pdftotext`) and exits with 1 when any check fails. A blank page is one with no text inside the content box, so a page holding only an image without text is reported too. Add `--allow-asterisks` for documents that show `**` itself, such as ones about Markdown syntax.
+`verify` needs poppler (`pdfinfo`, `pdffonts`, `pdftotext`, `pdftoppm`) and exits with 1 when any check fails. A blank page is one with neither text nor any drawing inside the content box; a page holding only a figure is not blank. Add `--allow-asterisks` for documents that show `**` itself, such as ones about Markdown syntax.
 
 ## Notes
 

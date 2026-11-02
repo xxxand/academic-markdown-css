@@ -5,7 +5,7 @@ Chinese-first A4 PDF themes for `md-to-pdf` (CommonJS, Node >= 22.12, npm). No b
 ## Commands
 
 - CI equivalent (no Chromium needed): `npm run check:contrast && npm run test:unit`, plus `node --check` on `md-to-pdf*.js scripts/*.js scripts/*.mjs test/*.js`.
-- `npm test` runs everything, including `test/render.test.js`, which renders fixtures with real Chromium and needs static Noto Serif/Sans SC TTFs, Sarasa Mono SC, and poppler (`pdfinfo`, `pdffonts`, `pdftotext`). Use `npm run test:unit` if those are missing.
+- `npm test` runs everything, including `test/render.test.js`, which renders fixtures with real Chromium and needs static Noto Serif/Sans SC TTFs, Sarasa Mono SC, and poppler (`pdfinfo`, `pdffonts`, `pdftotext`, `pdftoppm`, `pdfimages`). Use `npm run test:unit` if those are missing.
 - Single test file: `node --test test/markdown.test.js`.
 - Render with outputs elsewhere: `npm run render:all -- --theme night --outdir dist file.md` (`scripts/render.js`). The native `npm run render*` commands (raw `md-to-pdf`) can only write next to the source and need `--basedir` for files outside the repo.
 - Rebuild the committed examples with `npm run build:all`, then `npm run verify:examples`. `example.pdf`, `example-night.pdf`, and `example-mono.pdf` are tracked; other `*.pdf` and `example.html` are gitignored.
