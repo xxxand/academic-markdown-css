@@ -172,7 +172,7 @@ npm run test:unit            # tests that need no browser; this is what CI runs
 - Display formulas wider than the content area are scaled down to fit it; long inline code without break points wraps at the page margin.
 - When a diagram or formula fails to render the PDF is still written, with "Mermaid 渲染失败" or "KaTeX 渲染失败" printed in its place; `verify` reports those pages.
 - Code blocks use `pre-wrap`; Chromium does not apply a hanging indent to soft-wrapped lines, so keep code lines under 100 characters where possible.
-- The `fixCjkEmphasis` preprocess hook fixes strong emphasis next to full-width punctuation. It only inserts zero-width characters inside the delimiters; code blocks and maths are unchanged.
+- Strong emphasis next to full-width punctuation is parsed by `marked-cjk-friendly`.
 - Implementation notes for maintainers: [docs/architecture.md](docs/architecture.md) (Chinese).
 
 ## License

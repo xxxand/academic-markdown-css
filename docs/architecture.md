@@ -39,7 +39,7 @@ Markdown
 1. **静态 TTF，不用可变字体或 `fonts-noto-cjk`。** Chrome/Skia 导出时，可变字体和 CFF/OTC 会退化成 Type 3，体积约翻倍，还影响印刷预检；静态 TTF 才会嵌入为 CID TrueType。`verify.js` 把 Type 3 数量作为硬指标。
 2. **KaTeX 字体内联为 data URI。** `md-to-pdf` 用 HTTP 服务托管 `basedir`，KaTeX 样式里的相对字体路径在 `basedir` 不是项目目录时会 404，公式静默退回系统字体。配置加载时把 woff2 读成 base64 写进 `css`。
 3. **marked 18 加自定义 `code` renderer。** marked 4.x 在中文全角标点紧贴 `**` 时会把星号印出来，所以用 `overrides` 把 `md-to-pdf` 下的 marked 升到 18（Mermaid 保留自己的 16）。marked 5 起删除了 `highlight` 和 `langPrefix`，`md-to-pdf` 的代码高亮随之失效，因此由 `codeExtension` 自己调用 highlight.js，并把 `mermaid` 围栏输出成容器。
-4. **`fixCjkEmphasis` 预处理。** marked 18 仍不把全角标点当作合法的闭合边界，例如 `**中文（说明）**后文`。预处理在 `**` 内侧插入 U+2060，不改可见文字；行内代码、围栏代码和公式先被摘出，不受影响。
+4. **`marked-cjk-friendly` 处理强调边界。** marked 18 仍不把全角标点当作合法的闭合边界，例如 `**中文（说明）**后文`。这个扩展按 CJK 规则判断强调的两端，不改文本，也不会误处理 `2 ** 3 ** 4` 这类带空格的 `**`。它是 ESM 包，配置通过 `require(...).default` 加载，依赖 Node 22.12 起默认开启的 `require(esm)`。
 5. **按高度分页，并在打印版心宽度下测量。** `blockquote`、`pre`、`details`、`figure`、`.alert` 和不足 9 行的表格默认不跨页，表格行始终保持完整；高度超过版心 40% 的块加 `may-break`，允许在行间断开，否则会把整页推成空白。屏幕宽度和打印版心不同，量高度前先把 `body` 临时设为版心宽（170 mm）。表头用 `table-header-group` 在续页重复。
 6. **`page_media_type: "print"`。** `md-to-pdf` 默认以 screen 媒体生成 PDF，`@media print` 规则不会生效，这里统一用 print。
 7. **主题 = 基础层 + 颜色层。** 版式、字体和分页不随主题变化。页眉页脚模板是独立文档，Mermaid 用 `themeVariables`，两者读不到页面的 CSS 变量，所以它们的颜色在 `md-to-pdf.config.js` 里按主题另写一份。

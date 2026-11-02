@@ -2,6 +2,7 @@ const fs = require("fs");
 const path = require("path");
 const hljs = require("highlight.js");
 const markedKatex = require("marked-katex-extension");
+const markedCjkFriendly = require("marked-cjk-friendly").default;
 
 const KATEX_DIR = path.dirname(require.resolve("katex"));
 const KATEX_CSS_PATH = path.join(KATEX_DIR, "katex.min.css");
@@ -148,85 +149,6 @@ function escapeHtml(value) {
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;");
 }
-
-// CommonMark's emphasis rules do not treat full-width punctuation as a valid
-// closing boundary in some CJK cases, e.g. **中文（说明）**后文. Insert a word
-// joiner at the inner edge of the delimiter so marked can parse the strong
-// span without changing the visible text. Code spans, fenced code blocks, and
-// maths are protected first so their ** sequences are left untouched.
-function fixCjkEmphasis(markdown) {
-  const stash = [];
-  const putAside = (value) => {
-    const token = `\u0000CJK${stash.length}\u0000`;
-    stash.push(value);
-    return token;
-  };
-  let text = markdown;
-
-  text = text.replace(/(^|\n)(`{3,}|~{3,})[^\n]*\n[\s\S]*?\n\2[^\n]*(?=\n|$)/g, (match) =>
-    putAside(match),
-  );
-  text = text.replace(/(`+)([\s\S]*?)\1/g, (match) => putAside(match));
-  text = text.replace(/\$\$[\s\S]*?\$\$/g, (match) => putAside(match));
-  text = text.replace(/\$(?!\$)[^$\n]*?\$/g, (match) => putAside(match));
-
-  let result = "";
-  let cursor = 0;
-
-  while (cursor < text.length) {
-    const open = text.indexOf("**", cursor);
-    if (open === -1) {
-      result += text.slice(cursor);
-      break;
-    }
-
-    if (
-      (open > 0 && text[open - 1] === "\\") ||
-      text[open + 2] === "*" ||
-      text[open - 1] === "*"
-    ) {
-      result += text.slice(cursor, open + 2);
-      cursor = open + 2;
-      continue;
-    }
-
-    const close = text.indexOf("**", open + 2);
-    if (close === -1) {
-      result += text.slice(cursor);
-      break;
-    }
-
-    if (text[close + 2] === "*") {
-      result += text.slice(cursor, close + 2);
-      cursor = close + 2;
-      continue;
-    }
-
-    const inner = text.slice(open + 2, close);
-    if (!inner.trim()) {
-      result += text.slice(cursor, close + 2);
-      cursor = close + 2;
-      continue;
-    }
-
-    let fixedInner = inner;
-    if (/^[\s“（【《「『‘〈〔［｛(\[]/.test(inner)) fixedInner = `\u2060${fixedInner}`;
-    if (/[\s”’）】》」』〉〕］｝)\]。，、；：？！]$/.test(inner)) {
-      fixedInner += "\u2060";
-    }
-
-    result += `${text.slice(cursor, open + 2)}${fixedInner}**`;
-    cursor = close + 2;
-  }
-
-  return result.replace(/\u0000CJK(\d+)\u0000/g, (_, index) => stash[Number(index)]);
-}
-
-const cjkEmphasisExtension = {
-  hooks: {
-    preprocess: fixCjkEmphasis,
-  },
-};
 
 // Render code blocks ourselves so marked 5+ no longer relies on the removed
 // highlight/langPrefix options. Mermaid fences become containers that the
@@ -405,7 +327,7 @@ module.exports = {
     }),
     alertsExtension,
     codeExtension,
-    cjkEmphasisExtension,
+    markedCjkFriendly(),
   ],
   script: [
     {
@@ -464,8 +386,6 @@ module.exports = {
         var inlineElements = /^(A|CODE|EM|STRONG|SPAN|MARK|KBD|SUB|SUP|DEL|S|INS)$/;
 
         textNodes.forEach(function (node) {
-          if (node.nodeValue.indexOf("\u2060") !== -1) return;
-
           var previous = node.previousSibling;
           var afterInline = previous && previous.nodeType === Node.ELEMENT_NODE
             && inlineElements.test(previous.tagName);

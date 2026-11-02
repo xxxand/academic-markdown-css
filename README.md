@@ -172,7 +172,7 @@ npm run test:unit            # 不需要浏览器的测试，CI 运行这一组
 - 超出版心宽度的行间公式会等比缩小到版心内；没有断点的长行内代码在页边距处折行。
 - 图或公式渲染失败时 PDF 仍会生成，出错位置印有“Mermaid 渲染失败”或“KaTeX 渲染失败”；`verify` 会报告这些页。
 - 代码块使用 `pre-wrap`；Chromium 对软折行不悬挂缩进，建议单行不超过 100 字符。
-- `fixCjkEmphasis` 预处理修正中文全角标点紧贴 `**` 的强调解析，只在标记内侧插入零宽字符，不改代码块和公式。
+- 中文全角标点紧贴 `**` 的强调由 `marked-cjk-friendly` 解析。
 - 维护与实现说明见 [docs/architecture.md](docs/architecture.md)。
 
 ## License
