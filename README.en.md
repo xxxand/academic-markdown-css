@@ -139,7 +139,7 @@ Avoid enabling `table-layout: fixed` globally; it makes every table use equal-wi
 | Syntax | How to write it | Notes |
 |---|---|---|
 | Alerts | `> [!NOTE]` | NOTE / TIP / IMPORTANT / WARNING / CAUTION |
-| KaTeX | `$...$` / `$$...$$` | Inline and display maths; not full LaTeX |
+| KaTeX | `$...$` / `$$...$$` | Inline and display maths; not full LaTeX. Inline maths follows the standard rule: the opening `$` must follow a space or the start of a line, and a literal dollar sign is written `\$` |
 | Diff | `diff` code block | `+` / `-` lines are highlighted separately |
 | Mermaid | `mermaid` code block | Rendered to SVG inside Chromium |
 | Collapsible Q&A | `<details><summary>` | Expanded automatically for printing |

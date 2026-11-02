@@ -234,7 +234,8 @@ const cjkEmphasisExtension = {
 const codeExtension = {
   renderer: {
     code({ text, lang }) {
-      const language = (lang || "").trim().split(/\s+/)[0].toLowerCase();
+      const word = (lang || "").trim().split(/\s+/)[0].toLowerCase();
+      const language = /^[\w+#.-]+$/.test(word) ? word : "";
 
       if (language === "mermaid") {
         return `<pre class="mermaid">${escapeHtml(text)}</pre>\n`;
@@ -398,7 +399,6 @@ module.exports = {
   page_media_type: "print",
   marked_extensions: [
     markedKatex({
-      nonStandard: true,
       throwOnError: false,
       errorColor: KATEX_ERROR_COLOR,
       strict: "ignore",

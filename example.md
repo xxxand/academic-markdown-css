@@ -149,7 +149,7 @@ GitHub 风格 Alerts 使用 `> [!TYPE]` 语法，支持段落、列表和行内�
 
 ## 7. LaTeX 数学
 
-行内公式如 $E = mc^2$、$x_i \in \mathbb{R}^d$，以及 $\alpha^2 + \beta^2 = \gamma^2$。
+行内公式如 $E = mc^2$ 与 $x_i \in \mathbb{R}^d$，以及 $\alpha^2 + \beta^2 = \gamma^2$。
 
 行间公式使用 `$$`：
 

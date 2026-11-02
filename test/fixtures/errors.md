@@ -12,4 +12,4 @@ flowchart TD
   A[缺少右括号 -->
 ```
 
-无法解析的公式：$\badcommand{x}$。
+无法解析的公式： $\badcommand{x}$。

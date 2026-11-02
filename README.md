@@ -139,7 +139,7 @@ table:nth-of-type(2) th:nth-child(3) { width: 48%; }
 | 语法 | 写法 | 说明 |
 |---|---|---|
 | Alerts | `> [!NOTE]` | 支持 NOTE / TIP / IMPORTANT / WARNING / CAUTION |
-| KaTeX | `$...$` / `$$...$$` | 行内与行间公式；不是完整 LaTeX |
+| KaTeX | `$...$` / `$$...$$` | 行内与行间公式；不是完整 LaTeX。行内公式遵循标准规则：开头 `$` 前须是空格或行首，字面美元符写 `\$` |
 | Diff | `diff` 代码块 | `+` / `-` 行分别着色 |
 | Mermaid | `mermaid` 代码块 | Chromium 内渲染为 SVG |
 | 折叠问答 | `<details><summary>` | 打印时自动展开 |

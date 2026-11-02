@@ -78,6 +78,23 @@ test("alerts render with a typed title", () => {
   assert.match(output, /<p class="alert-title">警告 WARNING<\/p>/);
 });
 
-test("maths renders through KaTeX", () => {
-  assert.match(html("行内 $E = mc^2$ 公式"), /class="katex"/);
+test("maths: dollar amounts stay text", () => {
+  for (const markdown of ["价格 $5 和 $10。", "成本为 $5，利润 $10。", "价格 \\$5 和 \\$10。"]) {
+    const output = html(markdown);
+
+    assert.ok(!output.includes("katex"), output);
+    assert.ok(output.includes("$5"), output);
+  }
+});
+
+test("maths: a formula needs a space before the opening dollar sign", () => {
+  assert.ok(!html("设$a$为常数").includes("katex"));
+  assert.match(html("设 $a$ 为常数"), /class="katex"/);
+});
+
+test("code blocks: an info string cannot add attributes", () => {
+  const output = html('```js"onmouseover="x\ncode\n```');
+
+  assert.ok(!output.includes("onmouseover"), output);
+  assert.match(output, /<code class="hljs">/);
 });
