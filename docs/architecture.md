@@ -30,6 +30,7 @@ Markdown
 | `academic-markdown-night.css`、`academic-markdown-mono.css` | 颜色覆盖层，在基础样式之后加载，只改颜色 |
 | `scripts/render.js` | 批量渲染：`--outdir`、`--theme`、`--basedir` |
 | `scripts/verify.js` | PDF 验收：Type 3 字体、裸 `**`、Mermaid/KaTeX 渲染错误、空白页、KaTeX 字体 |
+| `docs/ai-markdown-guide.md` | 交给 AI 的写作规范：标点、空格、公式写法 |
 | `scripts/build-night.js`、`scripts/build-mono.js` | 替换 `example.md` 里的配色说明和插图后渲染示例 |
 | `scripts/check-contrast.mjs` | 夜间和黑白色对的 WCAG 检查 |
 | `test/` | `markdown`、`verify`、`cli` 三个测试文件不需要浏览器，CI 只跑它们；`render.test.js` 用真实流水线渲染 `fixtures/` |

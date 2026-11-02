@@ -174,6 +174,7 @@ npm run test:unit            # tests that need no browser; this is what CI runs
 - When a diagram or formula fails to render the PDF is still written, with "Mermaid 渲染失败" or "KaTeX 渲染失败" printed in its place; `verify` reports those pages.
 - Code blocks use `pre-wrap`; Chromium does not apply a hanging indent to soft-wrapped lines, so keep code lines under 100 characters where possible.
 - Strong emphasis next to full-width punctuation is parsed by `marked-cjk-friendly`.
+- To have an AI write Markdown for these themes, give it [docs/ai-markdown-guide.md](docs/ai-markdown-guide.md) (in Chinese) as the style guide.
 - Implementation notes for maintainers: [docs/architecture.md](docs/architecture.md) (Chinese).
 
 ## License
