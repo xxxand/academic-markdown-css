@@ -3,6 +3,7 @@ const path = require("path");
 const hljs = require("highlight.js");
 const markedKatex = require("marked-katex-extension");
 const markedCjkFriendly = require("marked-cjk-friendly").default;
+const markedFootnote = require("marked-footnote");
 
 const KATEX_DIR = path.dirname(require.resolve("katex"));
 const KATEX_CSS_PATH = path.join(KATEX_DIR, "katex.min.css");
@@ -328,6 +329,7 @@ module.exports = {
     alertsExtension,
     codeExtension,
     markedCjkFriendly(),
+    markedFootnote({ description: "脚注", headingClass: "footnotes-title", backRefLabel: "返回引用处 {0}" }),
   ],
   script: [
     {

@@ -654,6 +654,49 @@ details p {
 }
 
 /* --------------------------------------------------------------------------
+   Footnotes: collected at the end of the document
+   -------------------------------------------------------------------------- */
+
+a[data-footnote-ref] {
+  padding: 0 0.1em;
+  border-bottom: 0;
+  font-family: var(--font-sans);
+  font-weight: 600;
+}
+
+.footnotes {
+  margin-top: 2.2em;
+  padding-top: 0.2em;
+  border-top: 0.75pt solid var(--rule-light);
+  font-size: 9.3pt;
+  line-height: 1.7;
+}
+
+.footnotes .footnotes-title {
+  margin: 0.8em 0 0.4em;
+  padding: 0;
+  border: 0;
+  color: var(--muted);
+  font-size: 9pt;
+  letter-spacing: 0.08em;
+}
+
+.footnotes ol {
+  margin: 0;
+  padding-left: 1.6em;
+}
+
+.footnotes li {
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
+
+/* The back-link arrow is of no use on paper. */
+a[data-footnote-backref] {
+  display: none;
+}
+
+/* --------------------------------------------------------------------------
    LaTeX / KaTeX
    -------------------------------------------------------------------------- */
 

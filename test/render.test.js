@@ -159,6 +159,18 @@ test("figure-page: a page holding only a figure is not reported as blank", () =>
   assert.deepEqual(inspectPdf(path.join(outdir, "figure-page.pdf")).problems, []);
 });
 
+test("footnotes: the notes are printed after the text without back-link arrows", () => {
+  const text = pdfText("footnote.pdf");
+  const notes = text.slice(text.indexOf("脚注\n"));
+
+  for (const marker of ["FIRST_NOTE", "SECOND_NOTE", "ZH_NOTE", "TABLE_NOTE", "ALERT_NOTE"]) {
+    assert.ok(notes.includes(marker), `${marker} is missing from the footnotes`);
+  }
+  assert.ok(!text.includes("↩"), "the back-link arrow is printed");
+  assert.ok(!text.includes("[^"), "a reference was left unresolved");
+  assert.deepEqual(inspectPdf(path.join(outdir, "footnote.pdf")).problems, []);
+});
+
 test("themes: Markdown column alignment applies, and code is not justified", async () => {
   const puppeteer = require("puppeteer");
   const browser = await puppeteer.launch({ args: ["--no-sandbox"] });

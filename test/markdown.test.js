@@ -60,6 +60,16 @@ test("alerts render with a typed title", () => {
   assert.match(output, /<p class="alert-title">警告 WARNING<\/p>/);
 });
 
+test("footnotes: references become numbered superscripts and the notes are collected", () => {
+  const output = html("正文[^a]，再引用[^b]。\n\n[^a]: 注 A，含 `code`。\n[^b]: 注 B。");
+
+  assert.match(output, /<sup><a id="footnote-ref-a" href="#footnote-a" data-footnote-ref[^>]*>1<\/a><\/sup>/);
+  assert.match(output, /<section class="footnotes"[^>]*>/);
+  assert.match(output, /<h2 id="footnote-label" class="footnotes-title">脚注<\/h2>/);
+  assert.match(output, /<li id="footnote-a">\s*<p>注 A，含 <code>code<\/code>。/);
+  assert.ok(!output.includes("[^"), output);
+});
+
 test("maths: dollar amounts stay text", () => {
   for (const markdown of ["价格 $5 和 $10。", "成本为 $5，利润 $10。", "价格 \\$5 和 \\$10。"]) {
     const output = html(markdown);
