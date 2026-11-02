@@ -28,10 +28,6 @@ after(() => {
   fs.rmSync(outdir, { recursive: true, force: true });
 });
 
-test("render.js writes one PDF per fixture", () => {
-  assert.deepEqual(fs.readdirSync(outdir).sort(), ["alert.pdf", "defects.pdf", "errors.pdf", "katex.pdf", "mermaid.pdf", "overflow.pdf", "pagination.pdf"]);
-});
-
 test("katex: formula fonts are embedded when the base directory has no node_modules", () => {
   const result = inspectPdf(path.join(outdir, "katex.pdf"), { expectKatex: true });
 

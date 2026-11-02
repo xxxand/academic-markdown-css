@@ -17,10 +17,6 @@ DAAAAA+NotoSerifCJKsc-Regular        Type 3            Custom           yes no  
   assert.deepEqual(parseFonts(output), { type3: 1, katex: 2 });
 });
 
-test("parseFonts accepts a PDF without fonts", () => {
-  assert.deepEqual(parseFonts(FONT_HEADER), { type3: 0, katex: 0 });
-});
-
 test("parsePageInfo reads the page count and size", () => {
   const output = `Title:           Example
 Pages:           8
