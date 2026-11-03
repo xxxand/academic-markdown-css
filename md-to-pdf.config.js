@@ -325,6 +325,7 @@ module.exports = {
       throwOnError: false,
       errorColor: KATEX_ERROR_COLOR,
       strict: "ignore",
+      nonStandard: true,
     }),
     alertsExtension,
     codeExtension,

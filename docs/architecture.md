@@ -74,7 +74,7 @@ Markdown
 - 代码块使用 `pre-wrap`，Chromium 不对软折行的续行做悬挂缩进，建议单行不超过 100 字符。
 - `PAGE_COLORS`、`MERMAID_VARIABLES` 与 CSS 变量里的颜色各存一份，没有单一来源。改主题色时要同步修改，并重跑 `npm run check:contrast`。
 - 裸 `**` 检测会把代码示例里的 `**` 也算进去，此时用 `--allow-asterisks`。
-- 行内公式使用 `marked-katex-extension` 的标准规则：开头 `$` 前必须是空格或行首，结尾 `$` 后必须是空白、行尾或 `，。：？！,.:` 之一。`设$a$为常数`、`公式：$a$`、`$a$；` 这类写法不会渲染，转换也不报错。没有启用 `nonStandard`，因为它会把 `$5 … $10` 这样的价格当成公式。
+- 行内公式启用了 `marked-katex-extension` 的 `nonStandard`：`$...$` 前后不要求空格，`设$a$为常数`、`（$a$）`、`$a$；` 都能渲染。代价是同一行里成对的未转义 `$` 会被当成公式，`$5 … $10` 会变成公式，所以非公式的 `$` 必须写成 `\$`。标准规则要求开头 `$` 前是空格或行首、结尾 `$` 后是空白或 `，。：？！,.:`，不满足时公式不渲染也不报错，中文行文里很难避开，所以没有采用。
 - `md-to-pdf` 每次转换都会把扩展再登记到全局 `marked` 上，所以 `render.js` 在每个文件前用 `marked.setOptions(getDefaults())` 重置，避免批量渲染时扩展叠加。
 - `mermaid.min.js` 是自包含的打包文件，Mermaid 自己用的 KaTeX 编译在里面（12.2.0 内嵌 0.18.11），不受 `package.json` 里 `katex` 版本控制；要更新它只能升级 Mermaid。
 - `md-to-pdf` 在转换抛错时不会关闭它的静态服务，所以 `render.js` 结束时显式 `process.exit`，否则失败后进程不会退出。

@@ -70,8 +70,8 @@ test("footnotes: references become numbered superscripts and the notes are colle
   assert.ok(!output.includes("[^"), output);
 });
 
-test("maths: dollar amounts stay text", () => {
-  for (const markdown of ["价格 $5 和 $10。", "成本为 $5，利润 $10。", "价格 \\$5 和 \\$10。"]) {
+test("maths: escaped dollar amounts stay text", () => {
+  for (const markdown of ["价格 \\$5 和 \\$10。", "成本为 \\$5，利润 \\$10。"]) {
     const output = html(markdown);
 
     assert.ok(!output.includes("katex"), output);
@@ -79,9 +79,10 @@ test("maths: dollar amounts stay text", () => {
   }
 });
 
-test("maths: a formula needs a space before the opening dollar sign", () => {
-  assert.ok(!html("设$a$为常数").includes("katex"));
-  assert.match(html("设 $a$ 为常数"), /class="katex"/);
+test("maths: a formula renders next to any punctuation", () => {
+  for (const markdown of ["设$a$为常数", "设 $a$ 为常数", "（$a$）", "$a$；$b$", "$a$、$b$", "公式：$a$"]) {
+    assert.match(html(markdown), /class="katex"/, markdown);
+  }
 });
 
 test("code blocks: an info string cannot add attributes", () => {
