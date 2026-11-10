@@ -25,10 +25,11 @@ Chinese-first A4 academic PDF themes · light / night / monochrome
 
 ```bash
 npm install
-npm run build
+npm run render:all -- path/to/paper.md   # render your own document; the PDF is written next to the Markdown file, replacing a PDF of the same name
+npm run build                            # optional: render the example to check that the environment works
 ```
 
-`npm run build` renders the light version of `example.md` to `example.pdf`. Night and monochrome examples:
+`npm run build` renders the light version of `example.md` to `example.pdf`, which confirms that the browser and fonts are installed. Night and monochrome examples:
 
 ```bash
 npm run build:night  # example-night.pdf
@@ -205,6 +206,34 @@ A table with fewer than 9 rows and no taller than about 40% of the content area 
 | Collapsible Q&A | `<details><summary>` | Expanded automatically for printing |
 
 See [example.md](example.md) for complete runnable examples.
+
+### Footnotes
+
+```markdown
+Right: knowledge-intensive tasks[^code].
+
+[^code]: The note. Indent further paragraphs of a note by four spaces.
+
+Wrong: knowledge-intensive tasks.<sup>1</sup>
+```
+
+- Notes are always printed at the end of the document, not at the foot of the page (Chromium does not support page-foot footnotes). Where the definitions are written does not affect rendering.
+- References and definitions must pair up. `render:all` warns before rendering about a reference without a definition, a definition that is never referenced, a duplicated label, and a `<sup>number</sup>` paragraph; warnings do not stop the render.
+- `<sup>1</sup>` raises no error and the PDF is still produced, but it is plain text and never reaches the "脚注" section.
+- The heading of that section is fixed to "脚注", the footer to "第 N 页 / 共 M 页", and the page language to `zh-CN`. The project targets Chinese documents, so an English document carries these Chinese strings.
+
+Migrating older documents:
+
+| Source | Replace with |
+|---|---|
+| `<sup>1</sup>` in the text and `<sup>1</sup> note` at the end | `[^1]` and `[^1]: note` |
+| Superscript digits pasted from Word or PDF (such as `¹`) | the same, dropping the superscript character |
+| Pandoc footnotes `[^1]` | the same syntax, usable as is; Pandoc inline notes `^[note]` become a reference plus a definition |
+| Endnotes, numeric citations `[29]` | keep citations like `[29]` as they are; do not turn them into footnotes |
+
+### PDF Metadata
+
+The PDF Title comes from the first `h1`; Chromium does not write Author, Subject, or Keywords. If archiving needs them, set them after rendering with a tool such as `exiftool`.
 
 ## Accessibility
 

@@ -25,10 +25,11 @@
 
 ```bash
 npm install
-npm run build
+npm run render:all -- path/to/paper.md   # 渲染自己的文档，PDF 写在 Markdown 旁边；同名 PDF 会被覆盖
+npm run build                            # 可选：渲染示例，用来确认环境正常
 ```
 
-`npm run build` 渲染浅色版 `example.md`，生成 `example.pdf`。夜间和黑白示例：
+`npm run build` 渲染浅色版 `example.md`，生成 `example.pdf`，用来确认浏览器和字体都装好了。夜间和黑白示例：
 
 ```bash
 npm run build:night  # example-night.pdf
@@ -205,6 +206,34 @@ fc-list | grep -i "Sarasa Mono SC"
 | 折叠问答 | `<details><summary>` | 打印时自动展开 |
 
 完整可运行示例见 [example.md](example.md)。
+
+### 脚注
+
+```markdown
+正确：知识密集型任务[^code]。
+
+[^code]: 说明文字。多段说明的后续段落缩进 4 个空格。
+
+错误：知识密集型任务。<sup>1</sup>
+```
+
+- 脚注统一印在文末，不在当页页底（Chromium 不支持页底脚注）。定义写在哪里不影响渲染。
+- 引用与定义要成对。`render:all` 会在渲染前警告缺少定义、没有被引用、重复定义的标签，以及单独成段的 `<sup>数字</sup>`；警告不会中止渲染。
+- `<sup>1</sup>` 不会报错，PDF 也能生成，但它只是普通文字，不会进入“脚注”区。
+- 脚注区的标题固定为“脚注”，页脚固定为“第 N 页 / 共 M 页”，页面语言固定为 `zh-CN`；本项目面向中文文档，英文文档会带着这些中文文字。
+
+旧文档迁移：
+
+| 来源 | 改成 |
+|---|---|
+| 正文 `<sup>1</sup>`，文末 `<sup>1</sup> 说明` | `[^1]` 与 `[^1]: 说明` |
+| Word / PDF 复制出的上标数字（如 `¹`） | 同上，删掉上标字符 |
+| Pandoc 脚注 `[^1]` | 语法相同，可直接使用；Pandoc 的行内脚注 `^[说明]` 要改成引用加定义 |
+| 尾注、参考文献编号 `[29]` | 保持文献编号 `[29]` 原样，不要写成脚注 |
+
+### PDF 元数据
+
+PDF 的 Title 取自第一个 `h1`；Chromium 不写入 Author、Subject、Keywords。归档需要时，在渲染后用 `exiftool` 之类的工具补写。
 
 ## 可访问性
 
