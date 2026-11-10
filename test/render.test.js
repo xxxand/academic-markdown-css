@@ -159,6 +159,38 @@ test("figure-page: a page holding only a figure is not reported as blank", () =>
   assert.deepEqual(inspectPdf(path.join(outdir, "figure-page.pdf")).problems, []);
 });
 
+const wordsOf = (name) =>
+  [...execFileSync("pdftotext", ["-bbox", path.join(outdir, name), "-"], { encoding: "utf8" }).matchAll(/<word [^>]*>([^<]*)<\/word>/g)].map(
+    ([, word]) => word,
+  );
+
+test("wide-table: numbers, short labels and header words are not split", () => {
+  const words = new Set(wordsOf("wide-table.pdf"));
+  const whole = ["29.7", "41.2", "10.55", "1,284", "18,403", "B-1", "R-L", "BART", "RAG-T", "RAG-S", "最先进模型", "标签准确率", "MSMarco", "RAG-Sequence-Frozen"];
+
+  for (const word of whole) assert.ok(words.has(word), `${word} is split or missing`);
+});
+
+test("wide-table: every table fits inside the right margin and keeps its last column", () => {
+  const text = pdfText("wide-table.pdf");
+
+  // Chromium clips what overflows, so a table that did not fit loses its last column.
+  for (const marker of ["FVR-2", "合计", "C29", "DOC_END_MARK"]) assert.ok(text.includes(marker), `${marker} is missing`);
+
+  const ends = wordsEnding("wide-table.pdf", /./);
+  assert.ok(Math.max(...ends) <= RIGHT_LIMIT_PT, `a word ends at ${Math.max(...ends)}pt`);
+});
+
+test("wide-table: each table stays on one page", () => {
+  const all = pages("wide-table.pdf");
+  const pageOfRow = (label) => all.findIndex((page) => page.split("\n").includes(label));
+
+  for (const [first, last] of [["RAG-Token-BM25", "RAG-Sequence"], ["华北", "华南"]]) {
+    assert.equal(pageOfRow(first), pageOfRow(last), `${first} is on page ${pageOfRow(first) + 1} and ${last} on page ${pageOfRow(last) + 1}`);
+    assert.ok(pageOfRow(first) >= 0, `${first} is missing`);
+  }
+});
+
 test("footnotes: the notes are printed after the text without back-link arrows", () => {
   const text = pdfText("footnote.pdf");
   const notes = text.slice(text.indexOf("脚注\n"));

@@ -31,6 +31,10 @@ const PAGE = {
 };
 const CONTENT_WIDTH_MM = PAGE.width - PAGE.margin.left - PAGE.margin.right;
 const CONTENT_HEIGHT_PX = Math.round(((PAGE.height - PAGE.margin.top - PAGE.margin.bottom) / 25.4) * 96);
+// Table columns are classified by their widest body cell (in em, CJK = 1): up to the first
+// value the cells never wrap; up to the second they stay on one line while the table has room.
+const CELL_NEVER_WRAPS_EM = 5;
+const CELL_ONE_LINE_EM = 12;
 const HEADER_LABEL = process.env.MD_HEADER_LABEL || "ACADEMIC NOTES";
 
 const SERIF_FONT = '"Noto Serif SC", "Noto Serif CJK SC", "Noto Sans", serif';
@@ -295,6 +299,62 @@ const pageRuntime = `
     var formula = display.firstElementChild;
     if (formula && display.scrollWidth > display.clientWidth) {
       formula.style.zoom = String(Math.floor((display.clientWidth / display.scrollWidth) * 1000) / 1000);
+    }
+  });
+
+  function cellWidthInEm(cell) {
+    if (cell.querySelector(".katex, img")) return 0;
+
+    return Math.max.apply(null, cell.innerText.split("\\n").map(function (line) {
+      var width = 0;
+      for (var index = 0; index < line.length; index++) width += line.charCodeAt(index) < 0x2e80 ? 0.55 : 1;
+      return width;
+    }));
+  }
+
+  function contentWidth(element) {
+    var style = getComputedStyle(element);
+    return element.clientWidth - parseFloat(style.paddingLeft) - parseFloat(style.paddingRight);
+  }
+
+  document.querySelectorAll("table").forEach(function (table) {
+    var medium = [];
+
+    if (!table.querySelector("[colspan], [rowspan]")) {
+      var columns = [];
+      table.querySelectorAll("td").forEach(function (cell) {
+        (columns[cell.cellIndex] = columns[cell.cellIndex] || []).push(cell);
+      });
+
+      columns.forEach(function (cells) {
+        var width = Math.max.apply(null, cells.map(cellWidthInEm));
+        if (width > ${CELL_ONE_LINE_EM}) return;
+
+        cells.forEach(function (cell) { cell.classList.add("nowrap"); });
+        if (width > ${CELL_NEVER_WRAPS_EM}) medium.push(cells);
+      });
+    }
+
+    var available = contentWidth(table.parentElement);
+    function overflows() {
+      return table.getBoundingClientRect().width > available + 0.5;
+    }
+    function keepOnOneLine(on) {
+      medium.forEach(function (cells) {
+        cells.forEach(function (cell) { cell.classList.toggle("nowrap", on); });
+      });
+    }
+
+    // Medium columns give way first; if that does not help, only smaller type can.
+    if (overflows()) {
+      keepOnOneLine(false);
+      if (overflows()) keepOnOneLine(true);
+    }
+
+    for (var attempt = 0; attempt < 3 && overflows(); attempt++) {
+      var size = parseFloat(getComputedStyle(table).fontSize);
+      var ratio = available / table.getBoundingClientRect().width;
+      table.style.setProperty("--table-size", Math.floor(size * ratio * 100) / 100 + "px");
     }
   });
 

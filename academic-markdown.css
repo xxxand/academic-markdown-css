@@ -397,15 +397,30 @@ table code {
    -------------------------------------------------------------------------- */
 
 table {
+  --table-size: 9.3pt;
+  --cell-pad-x: 0.62em;
   display: table;
   width: 100%;
   margin: 1em 0 1.35em;
   border-collapse: collapse;
   border-spacing: 0;
-  font-size: 9.3pt;
+  font-size: var(--table-size);
   line-height: 1.55;
   overflow: visible;
   break-inside: auto;
+}
+
+/* Wide tables get smaller type and tighter cells by column count. If the
+   result is still wider than the text block, the injected script scales
+   --table-size down further. */
+table:has(thead th:nth-child(7)) {
+  --table-size: 8.6pt;
+  --cell-pad-x: 0.45em;
+}
+
+table:has(thead th:nth-child(9)) {
+  --table-size: 8pt;
+  --cell-pad-x: 0.35em;
 }
 
 /* Keep short tables on one page, together with their lead-in sentence. */
@@ -435,9 +450,22 @@ tfoot {
 
 table th,
 table td {
-  padding: 0.42em 0.62em;
+  padding: 0.42em var(--cell-pad-x);
   border: 0;
   vertical-align: top;
+}
+
+/* Header words are never split mid-word, CJK included. Body cells keep the
+   body's anywhere wrapping so a long address or identifier still breaks. The
+   injected script adds .nowrap to the cells of narrow columns, so labels and
+   numbers stay whole when the table is crowded. */
+table th {
+  overflow-wrap: normal;
+  word-break: keep-all;
+}
+
+table .nowrap {
+  white-space: nowrap;
 }
 
 /* Cells left alone are not justified like the body; an align attribute from
@@ -455,7 +483,7 @@ table thead th {
   background: transparent;
   color: #232830;
   font-family: var(--font-sans);
-  font-size: 9.2pt;
+  font-size: calc(var(--table-size) - 0.1pt);
   font-weight: 600;
 }
 
