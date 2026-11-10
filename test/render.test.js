@@ -232,6 +232,15 @@ test("footnotes: the notes are printed after the text without back-link arrows",
   assert.deepEqual(inspectPdf(path.join(outdir, "footnote.pdf")).problems, []);
 });
 
+test("footnotes: a mark after a full-width full stop sits in the blank half of the stop", () => {
+  const html = execFileSync("pdftotext", ["-bbox", path.join(outdir, "footnote.pdf"), "-"], { encoding: "utf8" });
+  const words = [...html.matchAll(/<word xMin="([\d.]+)"[^>]*xMax="([\d.]+)"[^>]*>([^<]*)<\/word>/g)].map(([, xMin, xMax, text]) => ({ xMin: Number(xMin), xMax: Number(xMax), text }));
+  const index = words.findIndex((word) => word.text.endsWith("GAPMARK。"));
+
+  assert.ok(index >= 0 && /^\d+$/.test(words[index + 1].text), "the sentence or its footnote mark is missing");
+  assert.ok(words[index + 1].xMin < words[index].xMax, `the mark starts at ${words[index + 1].xMin}pt, after the stop ends at ${words[index].xMax}pt`);
+});
+
 // The running header is letter-spaced, so pdftotext may put blanks between its letters.
 test("document-options: the sibling stylesheet and the front-matter header label are applied", () => {
   const text = pdfText("document-options.pdf");

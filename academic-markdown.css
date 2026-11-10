@@ -701,6 +701,10 @@ a[data-footnote-ref] {
   font-weight: 600;
 }
 
+sup.after-closing-mark {
+  margin-left: -0.5em;
+}
+
 .footnotes {
   margin-top: 2.2em;
   padding-top: 0.2em;

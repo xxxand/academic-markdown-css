@@ -501,6 +501,13 @@ module.exports = {
             return "\u2060" + closer;
           });
         });
+
+        // A full-width closing mark leaves half an em empty on its right; pull the footnote mark into it.
+        document.querySelectorAll("sup > a[data-footnote-ref]").forEach(function (reference) {
+          var before = reference.parentElement.previousSibling;
+          var last = before && before.nodeType === Node.TEXT_NODE ? before.nodeValue.slice(-1) : "";
+          if (last && closingPunctuation.indexOf(last) !== -1) reference.parentElement.classList.add("after-closing-mark");
+        });
       `,
     },
     { path: MERMAID_BUNDLE },
