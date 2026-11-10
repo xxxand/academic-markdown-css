@@ -94,6 +94,35 @@ test("pagination: the long code block breaks across pages without losing lines",
   assert.ok(all[all.length - 1].includes("END_OF_DOCUMENT"));
 });
 
+// Row counts of the table whose cells start with `prefix`, for each page that holds some of it.
+const rowCounts = (name, prefix) =>
+  pages(name)
+    .map((page) => (page.match(new RegExp(`${prefix}R\\d\\d`, "g")) || []).length)
+    .filter(Boolean);
+
+test("table-split: a table that splits keeps at least two rows on each side of the break", () => {
+  const splits = [];
+  for (let table = 1; table <= 16; table++) {
+    const counts = rowCounts("table-split.pdf", `T${String(table).padStart(2, "0")}`);
+
+    assert.equal(counts.reduce((sum, count) => sum + count, 0), 10, `table ${table} lost rows`);
+    if (counts.length > 1) splits.push(counts);
+  }
+
+  assert.ok(splits.length >= 3, `only ${splits.length} tables split, so the check proves little`);
+  for (const counts of splits) assert.ok(Math.min(...counts) >= 2, `a table was split into ${counts.join(" + ")} rows`);
+});
+
+test("table-control: keep-together holds a long table on one page and allow-break splits a short one", () => {
+  assert.ok(rowCounts("table-control.pdf", "DEF").length >= 2, "without a marker the long table should split");
+  assert.deepEqual(rowCounts("table-control.pdf", "KEEP"), [12]);
+  assert.deepEqual(rowCounts("table-control.pdf", "SHORT"), [5]);
+
+  const allowed = rowCounts("table-control.pdf", "ALLOW");
+  assert.ok(allowed.length >= 2, "allow-break should let the short table split");
+  assert.ok(Math.min(...allowed) >= 2, `the short table was split into ${allowed.join(" + ")} rows`);
+});
+
 test("defects: verify.js reports the blank page and the leaked asterisks", () => {
   const result = inspectPdf(path.join(outdir, "defects.pdf"));
 

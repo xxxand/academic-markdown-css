@@ -509,6 +509,15 @@ table tr {
   page-break-inside: avoid;
 }
 
+/* A table that splits keeps at least two rows on each side of the break. */
+table tbody tr:first-child {
+  break-after: avoid;
+}
+
+table tbody tr:last-child {
+  break-before: avoid;
+}
+
 table caption {
   caption-side: top;
   margin-bottom: 0.4em;
@@ -819,6 +828,14 @@ body pre .hljs-meta {
 .page-break {
   break-after: page;
   page-break-after: always;
+}
+
+/* Wrap content in <div class="keep-together"> to keep it on one page, or in
+   <div class="allow-break"> to let the tables, code blocks and other blocks
+   inside split across pages whatever their height. */
+.keep-together {
+  break-inside: avoid;
+  page-break-inside: avoid;
 }
 
 /* Tall blocks are marked by the injected script so they can split instead of

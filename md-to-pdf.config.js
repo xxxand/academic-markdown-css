@@ -359,7 +359,8 @@ const pageRuntime = `
   });
 
   document.querySelectorAll("pre:not(.mermaid), blockquote, table, details, figure, .alert").forEach(function (element) {
-    if (element.getBoundingClientRect().height > pageHeight * 0.4) {
+    if (element.closest(".keep-together")) return;
+    if (element.closest(".allow-break") || element.getBoundingClientRect().height > pageHeight * 0.4) {
       element.classList.add("may-break");
     }
   });
