@@ -81,3 +81,27 @@ test("the config rejects an unknown MD_THEME", () => {
   assert.equal(result.status, 1);
   assert.match(result.stderr, /Unknown MD_THEME "nigth"/);
 });
+
+const headerTemplate = (label) => {
+  const env = { ...process.env };
+  delete env.MD_HEADER_LABEL;
+  if (label !== undefined) env.MD_HEADER_LABEL = label;
+
+  return spawnSync(process.execPath, ["-e", 'console.log(require("./md-to-pdf.config.js").pdf_options.headerTemplate)'], {
+    cwd: root,
+    encoding: "utf8",
+    env,
+  }).stdout;
+};
+
+test("MD_HEADER_LABEL sets the header label and an empty value hides it", () => {
+  assert.match(headerTemplate(), /<span class="rhs">ACADEMIC NOTES<\/span>/);
+  assert.match(headerTemplate("机器人学"), /<span class="rhs">机器人学<\/span>/);
+  assert.match(headerTemplate(""), /<span class="rhs"><\/span>/);
+});
+
+test("buildHeaderTemplate escapes the label", () => {
+  const { buildHeaderTemplate } = require("../md-to-pdf.config.js");
+
+  assert.match(buildHeaderTemplate("A&B <C>"), /<span class="rhs">A&amp;B &lt;C&gt;<\/span>/);
+});

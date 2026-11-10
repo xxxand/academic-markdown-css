@@ -1,6 +1,7 @@
 const fs = require("fs");
 const path = require("path");
 const { parseArgs } = require("util");
+const matter = require("gray-matter");
 
 const THEMES = ["light", "night", "mono"];
 
@@ -15,6 +16,11 @@ Options:
   --basedir <dir>             serve relative assets from this directory; it must
                               contain every input (default: each file's own folder)
   -h, --help                  show this help
+
+Per document:
+  report.css next to report.md is added after the theme's stylesheets.
+  header_label in the front matter replaces the label at the right of the
+  running header (MD_HEADER_LABEL sets it for every document).
 `;
 
 function fail(message) {
@@ -65,6 +71,24 @@ function planJobs(files, { outdir, basedir }) {
   });
 }
 
+// md-to-pdf reads the front matter itself, but only this script can use it to
+// choose the header template. The JS front-matter engine stays disabled, as in
+// md-to-pdf, so rendering a document never runs code from it.
+const FRONT_MATTER_OPTIONS = { engines: { javascript: () => new Error("The JS front-matter engine is disabled.") } };
+
+function documentConfig(config, file) {
+  const overrides = {};
+  const stylesheet = path.join(path.dirname(file), `${path.basename(file, path.extname(file))}.css`);
+  if (fs.existsSync(stylesheet)) overrides.stylesheet = [...config.stylesheet, stylesheet];
+
+  const label = matter.read(file, FRONT_MATTER_OPTIONS).data.header_label;
+  if (typeof label === "string" || typeof label === "number") {
+    overrides.pdf_options = { ...config.pdf_options, headerTemplate: config.buildHeaderTemplate(String(label)) };
+  }
+
+  return overrides;
+}
+
 (async () => {
   const { values, positionals } = parseArgs({
     options: {
@@ -105,7 +129,7 @@ function planJobs(files, { outdir, basedir }) {
       // md-to-pdf registers the extensions on the global marked on every call;
       // start each file from a clean instance so they are not stacked.
       marked.setOptions(getDefaults());
-      await mdToPdf({ path: file }, { ...config, basedir, dest });
+      await mdToPdf({ path: file }, { ...config, ...documentConfig(config, file), basedir, dest });
       console.log(`wrote ${isInside(process.cwd(), dest) ? path.relative(process.cwd(), dest) : dest}`);
     } catch (error) {
       failed.push(file);

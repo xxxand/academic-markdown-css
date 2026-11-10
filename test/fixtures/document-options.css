@@ -1,0 +1,3 @@
+p::after {
+  content: " SIBLING_CSS_MARK";
+}

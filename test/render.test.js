@@ -232,6 +232,18 @@ test("footnotes: the notes are printed after the text without back-link arrows",
   assert.deepEqual(inspectPdf(path.join(outdir, "footnote.pdf")).problems, []);
 });
 
+// The running header is letter-spaced, so pdftotext may put blanks between its letters.
+test("document-options: the sibling stylesheet and the front-matter header label are applied", () => {
+  const text = pdfText("document-options.pdf");
+  const compact = text.replace(/\s+/g, "");
+
+  assert.ok(text.includes("SIBLING_CSS_MARK"), "the stylesheet next to the document was not applied");
+  assert.ok(compact.includes("HEADER_LABEL_MARK"), "the header label is missing");
+  assert.ok(!compact.includes("ACADEMICNOTES"), "the default header label is still printed");
+  assert.ok(pdfText("footnote.pdf").replace(/\s+/g, "").includes("ACADEMICNOTES"), "other documents keep the default label");
+  assert.ok(!pdfText("footnote.pdf").includes("SIBLING_CSS_MARK"), "a stylesheet leaked into another document");
+});
+
 test("themes: Markdown column alignment applies, and code is not justified", async () => {
   const puppeteer = require("puppeteer");
   const browser = await puppeteer.launch({ args: ["--no-sandbox"] });

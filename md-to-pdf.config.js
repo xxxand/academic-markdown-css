@@ -35,7 +35,7 @@ const CONTENT_HEIGHT_PX = Math.round(((PAGE.height - PAGE.margin.top - PAGE.marg
 // value the cells never wrap; up to the second they stay on one line while the table has room.
 const CELL_NEVER_WRAPS_EM = 5;
 const CELL_ONE_LINE_EM = 12;
-const HEADER_LABEL = process.env.MD_HEADER_LABEL || "ACADEMIC NOTES";
+const HEADER_LABEL = process.env.MD_HEADER_LABEL ?? "ACADEMIC NOTES";
 
 const SERIF_FONT = '"Noto Serif SC", "Noto Serif CJK SC", "Noto Sans", serif';
 const SANS_FONT = '"Noto Sans SC", "Noto Sans CJK SC", "Noto Sans", sans-serif';
@@ -369,6 +369,47 @@ const pageRuntime = `
 `;
 const pageRuntimeUrl = "data:text/javascript;base64," + Buffer.from(pageRuntime, "utf8").toString("base64");
 
+// The running header: the document title on the left and a short label on the right.
+function buildHeaderTemplate(label) {
+  return `
+      <style>
+        * { box-sizing: border-box; }
+        .page-header {
+          width: 100%;
+          padding: 0 ${PAGE.margin.right}mm 0 ${PAGE.margin.left}mm;
+          display: flex;
+          justify-content: space-between;
+          align-items: flex-end;
+          gap: 10mm;
+          font-family: ${SERIF_FONT};
+          font-size: 7.8pt;
+          line-height: 1.4;
+          letter-spacing: 0.03em;
+          color: ${PAGE_COLORS.headerText};
+          background: ${PAGE_COLORS.headerBg};
+          -webkit-print-color-adjust: exact;
+        }
+        .page-header .title {
+          min-width: 0;
+          overflow: hidden;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+        }
+        .page-header .rhs {
+          flex: 0 0 auto;
+          font-family: ${SANS_FONT};
+          font-size: 7.4pt;
+          letter-spacing: 0.12em;
+          color: ${PAGE_COLORS.headerAccent};
+        }
+      </style>
+      <div class="page-header">
+        <span class="title"></span>
+        <span class="rhs">${escapeHtml(label)}</span>
+      </div>
+  `;
+}
+
 // Generic configuration: works with any Markdown file in this project.
 module.exports = {
   stylesheet: [
@@ -476,43 +517,7 @@ module.exports = {
       bottom: `${PAGE.margin.bottom}mm`,
       left: `${PAGE.margin.left}mm`,
     },
-    headerTemplate: `
-      <style>
-        * { box-sizing: border-box; }
-        .page-header {
-          width: 100%;
-          padding: 0 ${PAGE.margin.right}mm 0 ${PAGE.margin.left}mm;
-          display: flex;
-          justify-content: space-between;
-          align-items: flex-end;
-          gap: 10mm;
-          font-family: ${SERIF_FONT};
-          font-size: 7.8pt;
-          line-height: 1.4;
-          letter-spacing: 0.03em;
-          color: ${PAGE_COLORS.headerText};
-          background: ${PAGE_COLORS.headerBg};
-          -webkit-print-color-adjust: exact;
-        }
-        .page-header .title {
-          min-width: 0;
-          overflow: hidden;
-          white-space: nowrap;
-          text-overflow: ellipsis;
-        }
-        .page-header .rhs {
-          flex: 0 0 auto;
-          font-family: ${SANS_FONT};
-          font-size: 7.4pt;
-          letter-spacing: 0.12em;
-          color: ${PAGE_COLORS.headerAccent};
-        }
-      </style>
-      <div class="page-header">
-        <span class="title"></span>
-        <span class="rhs">${escapeHtml(HEADER_LABEL)}</span>
-      </div>
-    `,
+    headerTemplate: buildHeaderTemplate(HEADER_LABEL),
     footerTemplate: `
       <style>
         * { box-sizing: border-box; }
@@ -538,3 +543,6 @@ module.exports = {
     `,
   },
 };
+
+// scripts/render.js uses this to give a document its own header label.
+module.exports.buildHeaderTemplate = buildHeaderTemplate;
