@@ -67,5 +67,8 @@
       "puppeteer": "25.15.0"
     }
   },
-  "license": "MIT"
+  "license": "MIT",
+  "allowScripts": {
+    "puppeteer@25.15.0": true
+  }
 }
