@@ -11,7 +11,8 @@ const PT_PER_MM = 72 / 25.4;
 const USAGE = `Usage: node scripts/verify.js [options] <file.pdf|directory>...
 
 Checks that each PDF is safe to print: no Type 3 fonts, no literal "**" left
-over from Markdown emphasis, no Mermaid or KaTeX render errors, and no blank pages. A directory stands for the
+over from Markdown emphasis, no Mermaid or KaTeX render errors, and no blank pages. It does not judge
+layout: a split number or a squeezed table column still passes. A directory stands for the
 *.pdf files directly inside it. Requires poppler (pdfinfo, pdffonts, pdftotext, pdftoppm).
 
 Options:

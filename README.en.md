@@ -14,12 +14,12 @@ Chinese-first A4 academic PDF themes · light / night / monochrome
 
 | Area | What you get |
 |---|---|
-| Layout | A4, 10.5 pt body text, 1.8 line height, first-line indentation, justified text, three-line tables, repeated table headers, running headers, page numbers, PDF bookmarks |
+| Layout | A4, 10.5 pt body text, 1.8 line height, first-line indentation, justified text, three-line tables, automatic compact layout for wide tables, repeated table headers, running headers, page numbers, PDF bookmarks |
 | Content | Code highlighting, diff blocks, GitHub alerts, KaTeX, Mermaid, `<details>`, task lists, definition lists |
 | Themes | Light / night / monochrome, all checked against WCAG 2.2 AA |
 | Output | CID TrueType font embedding, inlined KaTeX fonts, height-based pagination for tall tables and code blocks |
 
-`example.md` is five pages long. Each section picks a kind of syntax that is easy to get wrong (CJK emphasis and punctuation rules, maths, code wrapping, nested structures, tables, diagrams, footnotes), shows it, and explains how the project handles it. Pagination and font-embedding regressions are covered by the fixtures under `test/`.
+`example.md` is six pages long. Each section picks a kind of syntax that is easy to get wrong (CJK emphasis and punctuation rules, maths, code wrapping, nested structures, tables and wide tables, diagrams, footnotes), shows it, and explains how the project handles it. Pagination and font-embedding regressions are covered by the fixtures under `test/`.
 
 ## Quick Start
 
@@ -35,43 +35,55 @@ npm run build:night  # example-night.pdf
 npm run build:mono   # example-mono.pdf
 ```
 
+If rendering fails with `Could not find Chrome`, Puppeteer did not download a browser. Typical causes: `npm install --ignore-scripts`, `PUPPETEER_SKIP_DOWNLOAD` being set, or a proxy or firewall blocking the download. Install it by hand and check:
+
+```bash
+npx puppeteer browsers install chrome   # download the Chrome build that matches Puppeteer
+npx puppeteer browsers list             # show the installed browsers and their paths
+```
+
+Browsers are cached in `~/.cache/puppeteer`; change that with `PUPPETEER_CACHE_DIR`, set a proxy with `HTTPS_PROXY`, or point `PUPPETEER_EXECUTABLE_PATH` at a Chrome you already have. Recent npm versions (opt-in from 11.16, the default in 12) block dependency install scripts, including the one that downloads Puppeteer's browser; this project allows it in the `allowScripts` field of `package.json`. After upgrading Puppeteer, update the version in that entry.
+
 ## Rendering Your Own Document
 
-```bash
-npm run render -- path/to/your-file.md
-npm run render:night -- path/to/your-file.md
-npm run render:mono -- path/to/your-file.md
-```
-
-The PDF is written next to the Markdown file. To render in bulk, choose a theme, or write to another directory, use `render:all`:
+Use `render:all`. The file can live anywhere, and the PDF is written next to the Markdown file by default:
 
 ```bash
-npm run render:all -- docs/ --outdir dist                      # every *.md in the directory
-npm run render:all -- a.md b.md --theme night --outdir dist    # light / night / mono
+npm run render:all -- ~/notes/paper.md --theme night --outdir ~/notes/pdf   # a file outside this repo, PDF in another directory
+npm run render:all -- docs/ --outdir dist                                    # every *.md in the directory
+npm run render:all -- a.md b.md --theme mono                                 # light / night / mono
 ```
 
-Each file's own directory is its `basedir` by default, so images and other relative assets can sit next to the Markdown file. To reference assets in a parent directory, pass `--basedir` with a common directory that contains every input. `render`, `render:night`, and `render:mono` are the plain `md-to-pdf` commands: for a file outside this project, add `--basedir <the file's directory>` yourself. KaTeX fonts are inlined, so `basedir` does not affect maths fonts.
+Each file's own directory is its `basedir` by default, so images and other relative assets can sit next to the Markdown file. To reference assets in a parent directory, pass `--basedir` with a common directory that contains every input. KaTeX fonts are inlined, so `basedir` does not affect maths fonts.
+
+`npm run render`, `render:night`, and `render:mono` are the plain `md-to-pdf` commands: they can only write next to the Markdown file, a file outside this project needs `--basedir <the file's directory>`, and they ignore the per-document settings below (the sibling stylesheet and `header_label`).
 
 In a non-interactive WSL/CI shell, load nvm first:
 
 ```bash
 source "$HOME/.nvm/nvm.sh"
-npm run render -- path/to/your-file.md
+npm run render:all -- path/to/your-file.md
 ```
 
-The running-header label defaults to `ACADEMIC NOTES`; override it per course or project:
+### Per-document settings
 
-```bash
-MD_HEADER_LABEL="Robotics" npm run render -- path/to/your-file.md
-```
-
-The first `h1` becomes the document title. Override it with frontmatter:
+- **Header title**: the first `h1` by default, truncated with an ellipsis when it is too long. Set `document_title` in the frontmatter for a shorter one.
+- **Header label**: the right side of the running header defaults to `ACADEMIC NOTES`. Set `header_label` in the frontmatter to give each document its own; use the `MD_HEADER_LABEL` environment variable to give every document in a batch the same one. Precedence: frontmatter, environment variable, default. An empty string hides the label.
+- **Sibling stylesheet**: when `report.css` sits next to `report.md`, `render:all` adds it after the theme's stylesheets, for that document only.
 
 ```markdown
 ---
-document_title: My document title
+document_title: Retrieval-Augmented Generation
+header_label: Robotics
 ---
 ```
+
+```bash
+MD_HEADER_LABEL="Course notes" npm run render:all -- notes/    # for documents without header_label
+MD_HEADER_LABEL="" npm run render:all -- notes/                # hide the right-hand label
+```
+
+Do not use `md-to-pdf`'s own `--stylesheet`, and do not put `stylesheet:` or `css:` in the frontmatter: they replace rather than append, so the base theme (and, for `css`, the inlined KaTeX fonts) is lost.
 
 ## Themes
 
@@ -124,15 +136,62 @@ fc-list | grep -i "Sarasa Mono SC"
 - `md-to-pdf.config.js`: page margins (`PAGE`), header/footer, Mermaid, pagination threshold
 - `md-to-pdf.night.config.js` / `md-to-pdf.mono.config.js`: theme entry points
 
-Table column widths are allocated automatically. To fix a column, override a specific table:
+To restyle a single document, leave the theme files alone and put the rules in its sibling stylesheet (see "Per-document settings" above).
 
-```css
-table:nth-of-type(2) th:nth-child(1) { width: 12%; }
-table:nth-of-type(2) th:nth-child(2) { width: 40%; }
-table:nth-of-type(2) th:nth-child(3) { width: 48%; }
+## Tables
+
+### Wide tables
+
+A table with many columns needs no hand-tuned widths; these steps run automatically at render time. `example.md` section 5.2 has a 10-column example, and `test/fixtures/wide-table.md` collects shapes from 4 to 30 columns.
+
+| Step | What happens |
+|---|---|
+| Smaller type | 7–8 columns use 8.6 pt, 9 or more use 8 pt, and the cells' horizontal padding tightens |
+| Short cells never wrap | A column whose widest cell is at most 5 em (about 5 CJK characters or 9 Latin ones) never wraps, so `29.7`, `RAG-T`, and `最先进模型` are not split |
+| Medium cells stay on one line if they can | A column whose widest cell is at most 12 em stays on one line while the table has room, and wraps normally when it does not |
+| Header words stay whole | Headers wrap only at spaces, hyphens and the like; a CJK word is never split in the middle |
+| Whole-table scaling | If the table is still wider than the text block, its type is scaled down proportionally. A table like 30 columns ends up very small and should be split in two |
+
+Body cells can still break anywhere (long addresses and identifiers need that), so columns with long sentences wrap as usual. HTML tables with `colspan` / `rowspan` get no column protection, only the type tiers and whole-table scaling. To right-align a numeric column, write `---:` in the header separator row.
+
+### Column widths
+
+Column widths are allocated automatically. To fix a column, wrap the table in a container with a class name and write the rule against that class in the sibling stylesheet:
+
+```markdown
+<div class="results">
+
+| Model | Notes | Value |
+|---|---|---|
+| … | … | … |
+
+</div>
 ```
 
-Avoid enabling `table-layout: fixed` globally; it makes every table use equal-width columns.
+```css
+.results th:nth-child(1) { width: 12%; }
+.results th:nth-child(2) { width: 70%; }
+```
+
+Do not select a table by position (`table:nth-of-type(2)`): adding another table to the document moves the rule onto the wrong one. You can also select by column count; `table:has(thead th:nth-child(8))` matches tables with 8 or more columns. Avoid enabling `table-layout: fixed` globally; it makes every table use equal-width columns.
+
+### Pagination
+
+A table with fewer than 9 rows and no taller than about 40% of the content area stays on one page where possible, together with the sentence that introduces it. Longer tables may span pages: the header repeats, every row stays whole, and a split leaves at least two rows on each side of the break. To decide by hand, wrap the lead-in sentence and the table in a container:
+
+```markdown
+<div class="keep-together">
+
+**Table 3:** This table is not split.
+
+| … | … |
+|---|---|
+| … | … |
+
+</div>
+```
+
+`keep-together` keeps the container on one page; `allow-break` lets the tables, code blocks, quotes and so on inside split across pages whatever their height. Leave a blank line before and after the container tags, or the Markdown inside is not parsed.
 
 ## Extended Syntax
 
@@ -165,11 +224,13 @@ npm run test:unit            # tests that need no browser; this is what CI runs
 
 `verify` needs poppler (`pdfinfo`, `pdffonts`, `pdftotext`, `pdftoppm`) and exits with 1 when any check fails. A blank page is one with neither text nor any drawing inside the content box; a page holding only a figure is not blank. Add `--allow-asterisks` for documents that show `**` itself, such as ones about Markdown syntax.
 
+`verify` does not check table readability: a PDF with a number split across two lines or a squeezed column still passes. Chromium clips whatever overflows the content box, and clipped text is not in the PDF, so it cannot be found there either. Look at the preview after laying out a wide table; the automatic handling is guarded by `test/fixtures/wide-table.md`.
+
 ## Notes
 
 - Mermaid, KaTeX, and Alerts are processed locally; no CDN is required.
 - Night is intended for screen reading. Use light or monochrome for paper. Monochrome suits single-colour printing, photocopying, and contexts where colour would distract.
-- Short tables stay on one page where possible; tables, code blocks, quotes, alerts, details blocks, and figures taller than about 40% of the content area may span pages.
+- For table pagination see the "Tables" section above; code blocks, quotes, alerts, details blocks, and figures taller than about 40% of the content area may also span pages.
 - Display formulas wider than the content area are scaled down to fit it; long inline code without break points wraps at the page margin.
 - When a diagram or formula fails to render the PDF is still written, with "Mermaid 渲染失败" or "KaTeX 渲染失败" printed in its place; `verify` reports those pages.
 - Code blocks use `pre-wrap`; Chromium does not apply a hanging indent to soft-wrapped lines, so keep code lines under 100 characters where possible.

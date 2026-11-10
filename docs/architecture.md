@@ -18,17 +18,17 @@ Markdown
 
 1. 普通脚本：设置 `lang`、补 `<title>`、展开 `<details>`、清理关闭标点前的空格。
 2. Mermaid 打包文件。
-3. 模块脚本（`pageRuntime`）：等字体就绪，渲染 Mermaid，再按打印版心宽度量高度，给过高的块加 `may-break`。
+3. 模块脚本（`pageRuntime`）：等字体就绪，渲染 Mermaid，再按打印版心宽度处理表格（标记不换行的列、必要时缩小字号），最后量高度，给过高的块加 `may-break`。
 
 ## 文件职责
 
 | 文件 | 职责 |
 |---|---|
-| `md-to-pdf.config.js` | 流水线中心：marked 扩展、KaTeX 字体内联、页面脚本、`pdf_options`、页眉页脚，以及各主题的 `PAGE_COLORS` 和 `MERMAID_VARIABLES` |
+| `md-to-pdf.config.js` | 流水线中心：marked 扩展、KaTeX 字体内联、页面脚本、`pdf_options`、页眉页脚（`buildHeaderTemplate(label)` 也导出给 `render.js`），以及各主题的 `PAGE_COLORS` 和 `MERMAID_VARIABLES` |
 | `md-to-pdf.night.config.js`、`md-to-pdf.mono.config.js` | 设置 `MD_THEME` 后重新导出基础配置 |
 | `academic-markdown.css` | 版式和浅色主题；颜色集中在 `:root` 变量里 |
 | `academic-markdown-night.css`、`academic-markdown-mono.css` | 颜色覆盖层，在基础样式之后加载，只改颜色 |
-| `scripts/render.js` | 批量渲染：`--outdir`、`--theme`、`--basedir` |
+| `scripts/render.js` | 批量渲染：`--outdir`、`--theme`、`--basedir`；每篇文档的同名样式表和 frontmatter 的 `header_label` |
 | `scripts/verify.js` | PDF 验收：Type 3 字体、裸 `**`、Mermaid/KaTeX 渲染错误、空白页、KaTeX 字体 |
 | `docs/ai-markdown-guide.md` | 交给 AI 的写作规范：标点、空格、公式写法 |
 | `scripts/build-night.js`、`scripts/build-mono.js` | 替换 `example.md` 里的配色说明和插图后渲染示例 |
@@ -41,7 +41,7 @@ Markdown
 2. **KaTeX 字体内联为 data URI。** `md-to-pdf` 用 HTTP 服务托管 `basedir`，KaTeX 样式里的相对字体路径在 `basedir` 不是项目目录时会 404，公式静默退回系统字体。配置加载时把 woff2 读成 base64 写进 `css`。
 3. **marked 18 加自定义 `code` renderer。** marked 4.x 在中文全角标点紧贴 `**` 时会把星号印出来，所以用 `overrides` 把 `md-to-pdf` 下的 marked 升到 18（Mermaid 保留自己的 16）。marked 5 起删除了 `highlight` 和 `langPrefix`，`md-to-pdf` 的代码高亮随之失效，因此由 `codeExtension` 自己调用 highlight.js，并把 `mermaid` 围栏输出成容器。
 4. **`marked-cjk-friendly` 处理强调边界。** marked 18 仍不把全角标点当作合法的闭合边界，例如 `**中文（说明）**后文`。这个扩展按 CJK 规则判断强调的两端，不改文本，也不会误处理 `2 ** 3 ** 4` 这类带空格的 `**`。它是 ESM 包，配置通过 `require(...).default` 加载，依赖 Node 22.12 起默认开启的 `require(esm)`。
-5. **按高度分页，并在打印版心宽度下测量。** `blockquote`、`pre`、`details`、`figure`、`.alert` 和不足 9 行的表格默认不跨页，表格行始终保持完整；高度超过版心 40% 的块加 `may-break`，允许在行间断开，否则会把整页推成空白。屏幕宽度和打印版心不同，量高度前先把 `body` 临时设为版心宽（170 mm）。表头用 `table-header-group` 在续页重复。
+5. **按高度分页，并在打印版心宽度下测量。** `blockquote`、`pre`、`details`、`figure`、`.alert` 和不足 9 行的表格默认不跨页，表格行始终保持完整；高度超过版心 40% 的块加 `may-break`，允许在行间断开，否则会把整页推成空白。屏幕宽度和打印版心不同，量高度前先把 `body` 临时设为版心宽（170 mm）。表头用 `table-header-group` 在续页重复。容器 `.keep-together` 让内容整体不拆页，`.allow-break` 让里面的块一律加 `may-break`，两者都是手动开关，运行时不再按高度判断。
 6. **`page_media_type: "print"`。** `md-to-pdf` 默认以 screen 媒体生成 PDF，`@media print` 规则不会生效，这里统一用 print。
 7. **主题 = 基础层 + 颜色层。** 版式、字体和分页不随主题变化。页眉页脚模板是独立文档，Mermaid 用 `themeVariables`，两者读不到页面的 CSS 变量，所以它们的颜色在 `md-to-pdf.config.js` 里按主题另写一份。
 8. **`verify.js` 按版心裁剪。** 空白页检测先用 `pdftotext -x -y -W -H` 裁到版心看文字；没有文字的页再用 `pdftoppm` 渲染同一块区域，所有像素相同才算空白，所以只放插图的页不会误报。页眉页脚在页边距内，不会算作内容；裁剪尺寸取自 `pdf_options.margin`，与排版共用同一份页边距。
@@ -53,6 +53,19 @@ Markdown
 
 14. **脚注由 `marked-footnote` 生成，印在文末。** Chromium 不支持 `float: footnote`，没法把脚注排到每页底部，所以统一收在文档末尾。扩展用 `description: "脚注"` 和 `headingClass: "footnotes-title"` 把小标题改成中文并去掉屏幕阅读器专用的 `sr-only`；回链箭头 ↩ 在纸上没有用，由 `a[data-footnote-backref]` 隐藏。样式只用已有的 CSS 变量，所以三个主题共用基础层里的一份规则。
 15. **脚注小标题是 `h2`。** 它会出现在 PDF 书签里，这是有意保留的，方便跳到文末。未定义的引用 `[^x]` 会原样印出，没有被引用的定义会被丢弃，`verify.js` 不检查这两种情况。
+
+16. **宽表由 CSS 和页面脚本分工，策略是先保护、再让步、最后缩小。**
+    - 根因：`body` 的 `overflow-wrap: anywhere` 被单元格继承，把最小内容宽度算成一个字符，自动列宽可以把任何列压到几乎为零，于是 `29.7` 在小数点处断开、`NQ` 拆成 `N / Q`。正文单元格仍保留 `anywhere`，否则一个长网址会撑破整张表；表头 `th` 改用 `overflow-wrap: normal` 加 `word-break: keep-all`，词不会从中间拆开。
+    - 字号档位按列数用 `:has(thead th:nth-child(N))` 选表（7 列起 8.6 pt，9 列起 8 pt），不依赖脚本。
+    - 页面脚本按列判断：最宽的单元格不超过 5 em 的列一律加 `.nowrap`，不超过 12 em 的“中等列”在放得下时才加。表超出版心时先取消中等列的 `.nowrap`（它们恢复正常换行），取消之后仍然超出就恢复，因为这时只有缩小字号才有用；最后仍然超出的表缩小 `--table-size`。宽度按字符估算：CJK 为 1 em，其余 0.55 em。
+    - 缩放改 `--table-size` 变量，与列数档位共用同一个入口，内边距以 em 计，会同比缩小。没有用 `zoom`：它是非标准属性，在 `zoom` 下 `offsetWidth` 和 `getBoundingClientRect` 的单位不一致，反复测量时容易算错。公式仍用 `zoom`，因为那里只量一次。
+    - Chromium 会把越过版心的内容直接裁掉，被裁的文字不在 PDF 里，所以 `verify.js` 无从检出，只能靠 `test/fixtures/wide-table.md` 的断言：关键数字和标签是完整的词、最后一列还在、所有词都在右边距之内。含 `colspan` / `rowspan` 的表无法按列索引，只做档位和整表缩放。
+
+17. **拆页的表两侧至少留两行。** 第一行 `break-after: avoid`，最后一行 `break-before: avoid`，Chromium 会遵守。没有它们时，拆页的表常在页底留下一行、或在页首留下最后一行：`test/fixtures/table-split.md` 有 16 张表，关掉这两条规则后，6 张拆页的表里有 2 张出现单行。表只放得下一行时，整张表移到下一页，页底多出一行的空白。
+
+18. **每篇文档的设置只在 `render.js` 里生效。** 页眉模板是 Chromium 单独渲染的页面，读不到正文，所以 `header_label` 必须在渲染前由脚本取出，再换一份页眉模板，原生 `md-to-pdf` 命令做不到。脚本用 `gray-matter` 读 frontmatter，和 `md-to-pdf` 一样关闭 JS 引擎，渲染文档不会执行文档里的代码。同名样式表（`report.css`）追加在主题样式表之后；`md-to-pdf` 的 `--stylesheet` 和 frontmatter 的 `stylesheet` 是替换，所以不用它们。`MD_HEADER_LABEL` 用 `??` 取默认值，设成空字符串可以隐藏标签。
+
+19. **`package.json` 的 `allowScripts` 放行 Puppeteer。** 新版 npm 默认拦截依赖的安装脚本，Puppeteer 下载 Chrome 的 postinstall 会被跳过，第一次渲染才报 `Could not find Chrome`。条目带版本号（`puppeteer@25.15.0`），升级 Puppeteer 时要同步更新。
 
 ## 扩展点
 
@@ -74,6 +87,7 @@ Markdown
 - 代码块使用 `pre-wrap`，Chromium 不对软折行的续行做悬挂缩进，建议单行不超过 100 字符。
 - `PAGE_COLORS`、`MERMAID_VARIABLES` 与 CSS 变量里的颜色各存一份，没有单一来源。改主题色时要同步修改，并重跑 `npm run check:contrast`。
 - 裸 `**` 检测会把代码示例里的 `**` 也算进去，此时用 `--allow-asterisks`。
+- `verify.js` 不检查版面：被拆开的数字、被压扁的列照样通过，Chromium 裁掉的溢出内容也不在 PDF 里。
 - 行内公式启用了 `marked-katex-extension` 的 `nonStandard`：`$...$` 前后不要求空格，`设$a$为常数`、`（$a$）`、`$a$；` 都能渲染。代价是同一行里成对的未转义 `$` 会被当成公式，`$5 … $10` 会变成公式，所以非公式的 `$` 必须写成 `\$`。标准规则要求开头 `$` 前是空格或行首、结尾 `$` 后是空白或 `，。：？！,.:`，不满足时公式不渲染也不报错，中文行文里很难避开，所以没有采用。
 - `md-to-pdf` 每次转换都会把扩展再登记到全局 `marked` 上，所以 `render.js` 在每个文件前用 `marked.setOptions(getDefaults())` 重置，避免批量渲染时扩展叠加。
 - `mermaid.min.js` 是自包含的打包文件，Mermaid 自己用的 KaTeX 编译在里面（12.2.0 内嵌 0.18.11），不受 `package.json` 里 `katex` 版本控制；要更新它只能升级 Mermaid。
