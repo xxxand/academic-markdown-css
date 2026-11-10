@@ -71,6 +71,24 @@ test("render.js exits with an error when the browser cannot start", () => {
   }
 });
 
+test("render.js warns about footnote problems before rendering", () => {
+  const directory = fs.mkdtempSync(path.join(os.tmpdir(), "academic-markdown-"));
+
+  try {
+    const input = path.join(directory, "note.md");
+    fs.writeFileSync(input, "# x\n\n正文[^missing]。\n\n[^unused]: 说明。\n");
+    const result = run("render.js", ["--outdir", directory, input], {
+      env: { ...process.env, PUPPETEER_EXECUTABLE_PATH: path.join(directory, "no-such-chrome") },
+      timeout: 20000,
+    });
+
+    assert.match(result.stderr, /warning: .*note\.md:3: footnote \[\^missing\] is referenced but never defined/);
+    assert.match(result.stderr, /warning: .*note\.md:5: footnote \[\^unused\] is defined but never referenced/);
+  } finally {
+    fs.rmSync(directory, { recursive: true, force: true });
+  }
+});
+
 test("the config rejects an unknown MD_THEME", () => {
   const result = spawnSync(process.execPath, ["-e", 'require("./md-to-pdf.config.js")'], {
     cwd: root,

@@ -52,7 +52,7 @@ Markdown
 13. **主题文件里的行内代码规则要和基础层同级。** 基础层用 `h1 code … h4 code`、`table code` 去掉标题和表格里行内代码的底色；夜间和黑白的 `body code` 选择器优先级相同、加载更晚，所以两个主题文件里各有一份同样的覆盖规则。
 
 14. **脚注由 `marked-footnote` 生成，印在文末。** Chromium 不支持 `float: footnote`，没法把脚注排到每页底部，所以统一收在文档末尾。扩展用 `description: "脚注"` 和 `headingClass: "footnotes-title"` 把小标题改成中文并去掉屏幕阅读器专用的 `sr-only`；回链箭头 ↩ 在纸上没有用，由 `a[data-footnote-backref]` 隐藏。样式只用已有的 CSS 变量，所以三个主题共用基础层里的一份规则。
-15. **脚注小标题是 `h2`。** 它会出现在 PDF 书签里，这是有意保留的，方便跳到文末。未定义的引用 `[^x]` 会原样印出，没有被引用的定义会被丢弃，`verify.js` 不检查这两种情况。
+15. **脚注小标题是 `h2`。** 它会出现在 PDF 书签里，这是有意保留的，方便跳到文末。未定义的引用 `[^x]` 会原样印出，没有被引用的定义会被丢弃，PDF 里看不出来，`verify.js` 也读不到源码，所以由 `scripts/check-footnotes.js` 在 `render.js` 渲染前检查源文件：缺少定义、没有被引用、重复定义，以及 `<sup>数字</sup>` 冒充脚注。这些只是警告，不中止渲染，旧文档不会因此无法出 PDF；检查会跳过 frontmatter、围栏代码块和行内代码。
 
 16. **宽表由 CSS 和页面脚本分工，策略是先保护、再让步、最后缩小。**
     - 根因：`body` 的 `overflow-wrap: anywhere` 被单元格继承，把最小内容宽度算成一个字符，自动列宽可以把任何列压到几乎为零，于是 `29.7` 在小数点处断开、`NQ` 拆成 `N / Q`。正文单元格仍保留 `anywhere`，否则一个长网址会撑破整张表；表头 `th` 改用 `overflow-wrap: normal` 加 `word-break: keep-all`，词不会从中间拆开。

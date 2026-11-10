@@ -2,6 +2,7 @@ const fs = require("fs");
 const path = require("path");
 const { parseArgs } = require("util");
 const matter = require("gray-matter");
+const { findFootnoteProblems } = require("./check-footnotes.js");
 
 const THEMES = ["light", "night", "mono"];
 
@@ -18,6 +19,8 @@ Options:
   -h, --help                  show this help
 
 Per document:
+  Footnote problems (undefined or unused notes, <sup>1</sup> used as a note)
+  are printed as warnings and do not stop the render.
   report.css next to report.md is added after the theme's stylesheets.
   header_label in the front matter replaces the label at the right of the
   running header (MD_HEADER_LABEL sets it for every document).
@@ -76,6 +79,12 @@ function planJobs(files, { outdir, basedir }) {
 // md-to-pdf, so rendering a document never runs code from it.
 const FRONT_MATTER_OPTIONS = { engines: { javascript: () => new Error("The JS front-matter engine is disabled.") } };
 
+function warnAboutFootnotes(file) {
+  for (const { line, message } of findFootnoteProblems(fs.readFileSync(file, "utf8"))) {
+    console.warn(`warning: ${file}:${line}: ${message}`);
+  }
+}
+
 function documentConfig(config, file) {
   const overrides = {};
   const stylesheet = path.join(path.dirname(file), `${path.basename(file, path.extname(file))}.css`);
@@ -125,6 +134,7 @@ function documentConfig(config, file) {
 
   const failed = [];
   for (const { file, dest, basedir } of jobs) {
+    warnAboutFootnotes(file);
     try {
       // md-to-pdf registers the extensions on the global marked on every call;
       // start each file from a clean instance so they are not stacked.
